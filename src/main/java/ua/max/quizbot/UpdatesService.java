@@ -9,16 +9,13 @@ import ua.max.quizbot.record.Exercise;
 @Service
 public class UpdatesService {
 
-    private Quiz quiz;
-
-    private Integer lastSentMessageId;
+    private final SessionManager sessionManager;
 
     private final Bot bot;
 
     @Autowired
-    public UpdatesService(Bot bot) {
-        this.quiz = new Quiz();
-        this.lastSentMessageId = null;
+    public UpdatesService(SessionManager sessionManager, Bot bot) {
+        this.sessionManager = sessionManager;
         this.bot = bot;
     }
 
@@ -27,18 +24,27 @@ public class UpdatesService {
         if (chatId == null)
             return;
 
+        SessionManager.Session session = sessionManager.getSessionByChatId(chatId);
+        Quiz quiz = session.getQuiz();
+
         CallbackQuery callbackQuery = update.callbackQuery();
 
         if (!quiz.isStarted()) {
             // ensure that this isn't triggered by a press on a keyboard
             if (callbackQuery == null) {
-                bot.greetUser(chatId);
+                if (!session.hasStarted()) {
+                    bot.greetUser(chatId);
+                    session.start();
+                } else {
+                    bot.anounceNewTry(chatId);
+                }
                 quiz.start();
             } else return;
         } else {
             // ensure user is answering to keyboard
             if (callbackQuery != null) {
                 // ensure user is answering to last question
+                Integer lastSentMessageId = session.getLastSentMessageId();
                 if (lastSentMessageId != null &&
                         lastSentMessageId.equals(callbackQuery.maybeInaccessibleMessage().messageId())) {
                     int userCallbackData = Integer.parseInt(callbackQuery.data());
@@ -55,10 +61,10 @@ public class UpdatesService {
 
         // ask question if quiz not finished, otherwise print results and reset session
         if (!quiz.isFinished()) {
-            askQuestion(chatId);
+            askQuestion(chatId, session);
         } else {
             bot.publishResults(chatId, quiz.getResults());
-            quiz = new Quiz();
+            session.loadNewQuiz();
         }
     }
 
@@ -78,9 +84,9 @@ public class UpdatesService {
         return chatId;
     }
 
-    private void askQuestion(Long chatId) {
-        Exercise exercise = quiz.getExercise();
+    private void askQuestion(Long chatId, SessionManager.Session session) {
+        Exercise exercise = session.getQuiz().getExercise();
         Integer sentMessageId = bot.askQuestionAndGetMessageId(chatId, exercise);
-        lastSentMessageId = sentMessageId;
+        session.setLastSentMessageId(sentMessageId);
     }
 }

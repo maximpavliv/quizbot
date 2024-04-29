@@ -39,6 +39,10 @@ public class Bot {
         sendMessage(chatId, bundle.getString("quiz_starting_message"));
     }
 
+    public void anounceNewTry(@NotNull Long chatId) {
+        sendMessage(chatId, bundle.getString("quiz_new_try_message"));
+    }
+
     public Integer askQuestionAndGetMessageId(@NotNull Long chatId, Exercise exercise) {
         List<String> answerChoices = exercise.answerChoices();
 
@@ -70,6 +74,10 @@ public class Bot {
             sendMessage(chatId, MessageFormat.format(
                     bundle.getString("correct_answer_to_question_was"), question, corrections.get(question)));
         }
+    }
+
+    public void notifySessionHasExpired(@NotNull Long chatId) {
+        sendMessage(chatId, bundle.getString("session_expired"));
     }
 
     private void sendMessage(@NotNull Long chatId, String text) {
