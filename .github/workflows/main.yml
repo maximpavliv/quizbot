@@ -1,4 +1,4 @@
-name: Deploy
+name: Integration Testing and Deployment
 
 on:
   push:
@@ -6,11 +6,41 @@ on:
       - main
 
 jobs:
-  build:
+  test:
+    name: "Integration Testing"
     runs-on: ubuntu-latest
+    env:
+      QUIZBOT_TELEGRAM_TOKEN: ${{secrets.QUIZBOT_TELEGRAM_TOKEN}}
     steps:
-      - uses: actions/checkout@v2
-      - uses: akhileshns/heroku-deploy@v3.13.15 # This is the action
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '21'
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Install dependencies
+        run: mvn install -DskipTests
+      - name: Build with Maven and Run Integration Tests
+        run: mvn clean verify --batch-mode --fail-at-end
+
+  deploy:
+    name: "Deployment"
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.13.15
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "kwizzzzbot"
