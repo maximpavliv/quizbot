@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ua.max.quizbot.services.QuizService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,15 +13,18 @@ import java.util.Map;
 public class SessionManager {
     private final Bot bot;
 
+    private final QuizService quizService;
+
     // Period for considering a session inactive (1 hour)
     private final static long INACTIVE_THRESHOLD = 3600000;
 
     private final Map<Long, Session> sessions;
 
     @Autowired
-    public SessionManager(Bot bot) {
+    public SessionManager(Bot bot, QuizService quizService) {
         sessions = new HashMap<>();
         this.bot = bot;
+        this.quizService = quizService;
     }
 
     public Session getSessionByChatId(@NotNull Long chatId) {
@@ -58,7 +62,7 @@ public class SessionManager {
         private boolean started;
 
         public Session(Long chatId) {
-            quiz = new Quiz();
+            this.quiz = quizService.createQuiz();
             lastSentMessageId = null;
             this.chatId = chatId;
             updateLastActivityTime();
@@ -94,7 +98,7 @@ public class SessionManager {
 
         public void loadNewQuiz() {
             updateLastActivityTime();
-            quiz = new Quiz();
+            quiz = quizService.createQuiz();
         }
 
         public long getLastActivityTime() {
