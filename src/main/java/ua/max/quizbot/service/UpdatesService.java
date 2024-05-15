@@ -4,20 +4,19 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.max.quizbot.SessionManager;
 import ua.max.quizbot.record.Exercise;
 import ua.max.quizbot.utils.Bot;
 
 @Service
 public class UpdatesService {
 
-    private final SessionManager sessionManager;
+    private final SessionService sessionService;
 
     private final Bot bot;
 
     @Autowired
-    public UpdatesService(SessionManager sessionManager, Bot bot) {
-        this.sessionManager = sessionManager;
+    public UpdatesService(SessionService sessionService, Bot bot) {
+        this.sessionService = sessionService;
         this.bot = bot;
     }
 
@@ -28,32 +27,34 @@ public class UpdatesService {
 
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        if (!sessionManager.sessionExists(chatId))
-            sessionManager.createSession(chatId);
+        boolean createdNewSession = false;
+        if (!sessionService.sessionExists(chatId)) {
+            sessionService.createSession(chatId);
+            createdNewSession = true;
+        }
 
-        if (!sessionManager.quizIsStarted(chatId)) {
+        if (!sessionService.quizIsStarted(chatId)) {
             // ensure that this isn't triggered by a press on a keyboard
             if (callbackQuery == null) {
-                if (!sessionManager.sessionHasStarted(chatId)) {
+                if (createdNewSession) {
                     bot.greetUser(chatId);
-                    sessionManager.startSession(chatId);
                 } else {
                     bot.anounceNewTry(chatId);
                 }
-                sessionManager.startQuiz(chatId);
+                sessionService.startQuiz(chatId);
             } else return;
         } else {
             // ensure user is answering to keyboard
             if (callbackQuery != null) {
                 // ensure user is answering to last question
-                Integer lastSentMessageId = sessionManager.getLastSentMessageId(chatId);
+                Integer lastSentMessageId = sessionService.getLastSentMessageId(chatId);
                 if (lastSentMessageId != null &&
                         lastSentMessageId.equals(callbackQuery.maybeInaccessibleMessage().messageId())) {
                     int userCallbackData = Integer.parseInt(callbackQuery.data());
-                    Exercise exercise = sessionManager.getCurrentExercise(chatId);
+                    Exercise exercise = sessionService.getCurrentExercise(chatId);
                     String userAnswer = exercise.answerChoices().get(userCallbackData);
                     bot.repeatUserAnswer(chatId, userAnswer);
-                    sessionManager.saveAnswerAndSwitchToNextExercise(chatId, userCallbackData);
+                    sessionService.saveAnswerAndSwitchToNextExercise(chatId, userCallbackData);
                 } else return;
             } else {
                 // Say user's input wasn't understood
@@ -62,11 +63,11 @@ public class UpdatesService {
         }
 
         // ask question if quiz not finished, otherwise print results and reset session
-        if (!sessionManager.quizIsFinished(chatId)) {
+        if (!sessionService.quizIsFinished(chatId)) {
             askQuestion(chatId);
         } else {
-            bot.publishResults(chatId, sessionManager.getResults(chatId));
-            sessionManager.loadNewQuiz(chatId);
+            bot.publishResults(chatId, sessionService.getResults(chatId));
+            sessionService.loadNewQuiz(chatId);
         }
     }
 
@@ -87,8 +88,8 @@ public class UpdatesService {
     }
 
     private void askQuestion(Long chatId) {
-        Exercise exercise = sessionManager.getCurrentExercise(chatId);
+        Exercise exercise = sessionService.getCurrentExercise(chatId);
         Integer sentMessageId = bot.askQuestionAndGetMessageId(chatId, exercise);
-        sessionManager.setLastSentMessageId(chatId, sentMessageId);
+        sessionService.setLastSentMessageId(chatId, sentMessageId);
     }
 }

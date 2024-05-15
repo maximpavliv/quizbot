@@ -10,6 +10,10 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long quizId;
 
+    @OneToOne
+    @JoinColumn(name = "sessionId", referencedColumnName = "sessionId")
+    private Session session;
+
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     @OrderBy("idx ASC")
     private List<QuizExercise> quizExercises;
@@ -24,6 +28,14 @@ public class Quiz {
 
     public void setQuizId(Long quizId) {
         this.quizId = quizId;
+    }
+
+    public Session getSession() {
+        return session;
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     public List<QuizExercise> getQuizExercises() {

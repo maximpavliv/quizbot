@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.max.quizbot.model.Question;
 import ua.max.quizbot.model.Quiz;
 import ua.max.quizbot.model.QuizExercise;
+import ua.max.quizbot.model.Session;
 import ua.max.quizbot.record.Exercise;
 import ua.max.quizbot.record.QuizResults;
 import ua.max.quizbot.repository.QuestionRepository;
@@ -37,7 +38,7 @@ public class QuizService {
     }
 
     @Transactional
-    public Quiz createQuiz() {
+    public Quiz createQuiz(Session session) {
         List<Long> allQuestionsIds = questionRepository.findAllIds();
 
         if (QUIZ_LENGTH < 1 || QUIZ_LENGTH > allQuestionsIds.size()){
@@ -46,6 +47,8 @@ public class QuizService {
 
         Quiz newQuiz = new Quiz();
         quizRepository.save(newQuiz);
+
+        newQuiz.setSession(session);
 
         Collections.shuffle(allQuestionsIds);
         List<Question> questions = allQuestionsIds.subList(0, QUIZ_LENGTH).stream()
