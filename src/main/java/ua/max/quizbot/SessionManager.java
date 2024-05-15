@@ -1,10 +1,12 @@
 package ua.max.quizbot;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ua.max.quizbot.record.Exercise;
+import ua.max.quizbot.record.QuizResults;
 import ua.max.quizbot.service.QuizService;
+import ua.max.quizbot.utils.Bot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,16 +29,6 @@ public class SessionManager {
         this.quizService = quizService;
     }
 
-    public Session getSessionByChatId(@NotNull Long chatId) {
-        if (sessions.containsKey(chatId)) {
-            return sessions.get(chatId);
-        } else {
-            Session session = new Session(chatId);
-            sessions.put(chatId, session);
-            return session;
-        }
-    }
-
     @Scheduled(fixedRate = INACTIVE_THRESHOLD)
     public void cleanupInactiveSessions() {
         long currentTime = System.currentTimeMillis();
@@ -50,10 +42,92 @@ public class SessionManager {
                 });
     }
 
-    public class Session {
-        private Quiz quiz;
+    public boolean sessionExists(Long chatId) {
+        return sessions.containsKey(chatId);
+    }
 
+    public void createSession(Long chatId) {
+        Session newSession = new Session();
+
+        newSession.setQuiz(quizService.createQuiz());
+        newSession.setLastSentMessageId(null);
+        newSession.setChatId(chatId);
+        newSession.setLastActivityTime(System.currentTimeMillis());
+        newSession.setStarted(false);
+
+        sessions.put(chatId, newSession);
+    }
+
+    public boolean sessionHasStarted(Long chatId) {
+        Session session = sessions.get(chatId);
+        return session.getStarted();
+    }
+
+    public void startSession(Long chatId) {
+        Session session = sessions.get(chatId);
+        session.setStarted(true);
+        updateLastActivityTime(chatId);
+    }
+
+    public boolean quizIsStarted(Long chatId) {
+        Session session = sessions.get(chatId);
+        Quiz quiz = session.getQuiz();
+        return quiz.getStarted();
+    }
+
+    public void startQuiz(Long chatId) {
+        Session session = sessions.get(chatId);
+        Quiz quiz = session.getQuiz();
+        quiz.setStarted(true);
+        updateLastActivityTime(chatId);
+    }
+
+    public Integer getLastSentMessageId(Long chatId) {
+        Session session = sessions.get(chatId);
+        return session.getLastSentMessageId();
+    }
+
+    public void setLastSentMessageId(Long chatId, Integer lastSentMessageId) {
+        Session session = sessions.get(chatId);
+        session.setLastSentMessageId(lastSentMessageId);
+    }
+
+    public Exercise getCurrentExercise(Long chatId) {
+        Session session = sessions.get(chatId);
+       return quizService.getCurrentExercise(session.getQuiz());
+    }
+
+    public void saveAnswerAndSwitchToNextExercise(Long chatId, int userAnswer) {
+        Session session = sessions.get(chatId);
+        quizService.saveAnswerAndSwitchToNextExercise(session.getQuiz(), userAnswer);
+        updateLastActivityTime(chatId);
+    }
+
+    public boolean quizIsFinished(Long chatId) {
+        Session session = sessions.get(chatId);
+        return quizService.quizIsFinished(session.getQuiz());
+    }
+
+    public QuizResults getResults(Long chatId) {
+        Session session = sessions.get(chatId);
+        return quizService.getResults(session.getQuiz());
+    }
+
+    public void loadNewQuiz(Long chatId) {
+        Session session = sessions.get(chatId);
+        session.setQuiz(quizService.createQuiz());
+        updateLastActivityTime(chatId);
+    }
+
+    private void updateLastActivityTime(Long chatId) {
+        Session session = sessions.get(chatId);
+        session.setLastActivityTime(System.currentTimeMillis());
+    }
+
+    public class Session {
         private Long chatId;
+
+        private Quiz quiz;
 
         private Integer lastSentMessageId;
 
@@ -61,52 +135,46 @@ public class SessionManager {
 
         private boolean started;
 
-        public Session(Long chatId) {
-            this.quiz = quizService.createQuiz();
-            lastSentMessageId = null;
-            this.chatId = chatId;
-            updateLastActivityTime();
-            started = false;
-        }
-
-        public boolean hasStarted() {
-            return started;
-        }
-
-        public void start() {
-            started = true;
-        }
-
-        public Quiz getQuiz() {
-            updateLastActivityTime();
-            return quiz;
-        }
+        public Session() {}
 
         public Long getChatId() {
             return chatId;
         }
 
+        public void setChatId(Long chatId) {
+            this.chatId = chatId;
+        }
+
+        public Quiz getQuiz() {
+            return quiz;
+        }
+
+        public void setQuiz(Quiz quiz) {
+            this.quiz = quiz;
+        }
+
         public Integer getLastSentMessageId() {
-            updateLastActivityTime();
             return lastSentMessageId;
         }
 
         public void setLastSentMessageId(Integer lastSentMessageId) {
-            updateLastActivityTime();
             this.lastSentMessageId = lastSentMessageId;
-        }
-
-        public void loadNewQuiz() {
-            updateLastActivityTime();
-            quiz = quizService.createQuiz();
         }
 
         public long getLastActivityTime() {
             return lastActivityTime;
         }
 
-        private void updateLastActivityTime() {
-            lastActivityTime = System.currentTimeMillis();
+        private void setLastActivityTime(long lastActivityTime) {
+            this.lastActivityTime = lastActivityTime;
+        }
+
+        public boolean getStarted() {
+            return started;
+        }
+
+        public void setStarted(boolean started) {
+            this.started = started;
         }
     }
 }

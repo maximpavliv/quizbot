@@ -3,16 +3,17 @@ package ua.max.quizbot;
 import ua.max.quizbot.model.Choice;
 import ua.max.quizbot.model.Question;
 import ua.max.quizbot.record.Exercise;
-import ua.max.quizbot.record.QuizResults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Quiz {
-    private final List<ShuffledExerciseWithSolution> exercisesWithSolutions;
+    private List<ShuffledExerciseWithSolution> exercisesWithSolutions;
 
-    private final List<Integer> userAnswers;
+    private List<Integer> userAnswers;
 
     private boolean started;
 
@@ -41,53 +42,41 @@ public class Quiz {
                 .map(ShuffledExerciseWithSolution::new).collect(Collectors.toList());
     }
 
-    public boolean isStarted() {
+    public List<ShuffledExerciseWithSolution> getExercisesWithSolutions() {
+        return exercisesWithSolutions;
+    }
+
+    public void setExercisesWithSolutions(List<ShuffledExerciseWithSolution> exercisesWithSolutions) {
+        this.exercisesWithSolutions = exercisesWithSolutions;
+    }
+
+    public List<Integer> getUserAnswers() {
+        return userAnswers;
+    }
+
+    public void setUserAnswers(List<Integer> userAnswers) {
+        this.userAnswers = userAnswers;
+    }
+
+    public boolean getStarted() {
         return started;
     }
 
-    public void start() {
-        started = true;
+    public void setStarted(boolean started) {
+        this.started = started;
     }
 
-    public boolean isFinished() {
-        return (currentExerciseIdx >= exercisesWithSolutions.size());
+    public int getCurrentExerciseIdx() {
+        return currentExerciseIdx;
     }
 
-    public Exercise getExercise() {
-        return exercisesWithSolutions.get(currentExerciseIdx).getExercise();
+    public void setCurrentExerciseIdx(int currentExerciseIdx) {
+        this.currentExerciseIdx = currentExerciseIdx;
     }
 
-    public void saveAnswerAndSwitchToNextExercise(Integer userAnswer) {
-        userAnswers.add(userAnswer);
-        currentExerciseIdx++;
-    }
+    public record ProblemWithSolution(String question, String rightAnswer, String[] wrongAnswers) {}
 
-    public QuizResults getResults() {
-        if (!isFinished())
-            return null;
-
-        int numberQuestions = exercisesWithSolutions.size();
-        long correctAnswersCount = IntStream.range(0, numberQuestions)
-                .filter(i -> userAnswers.get(i).equals(exercisesWithSolutions.get(i).getSolution()))
-                .count();
-        String score = correctAnswersCount + "/" + numberQuestions;
-
-        SequencedMap<String, String> corrections = new LinkedHashMap<>();
-        for (int i=0; i<exercisesWithSolutions.size(); i++) {
-            ShuffledExerciseWithSolution exerciseWithSolution = exercisesWithSolutions.get(i);
-            int userAnswer = userAnswers.get(i);
-            if (exerciseWithSolution.getSolution() != userAnswer) {
-                corrections.put(
-                        exerciseWithSolution.getExercise().question(),
-                        exerciseWithSolution.getExercise().answerChoices().get(exerciseWithSolution.getSolution()));
-            }
-        }
-         return new QuizResults(score, corrections);
-    }
-
-    private record ProblemWithSolution(String question, String rightAnswer, String[] wrongAnswers) {}
-
-    private static class ShuffledExerciseWithSolution {
+    public static class ShuffledExerciseWithSolution {
         private final Exercise exercise;
         private final int solution;
 

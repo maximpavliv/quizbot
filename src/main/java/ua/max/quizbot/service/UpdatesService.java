@@ -4,10 +4,9 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.max.quizbot.Bot;
-import ua.max.quizbot.Quiz;
 import ua.max.quizbot.SessionManager;
 import ua.max.quizbot.record.Exercise;
+import ua.max.quizbot.utils.Bot;
 
 @Service
 public class UpdatesService {
@@ -27,34 +26,34 @@ public class UpdatesService {
         if (chatId == null)
             return;
 
-        SessionManager.Session session = sessionManager.getSessionByChatId(chatId);
-        Quiz quiz = session.getQuiz();
-
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        if (!quiz.isStarted()) {
+        if (!sessionManager.sessionExists(chatId))
+            sessionManager.createSession(chatId);
+
+        if (!sessionManager.quizIsStarted(chatId)) {
             // ensure that this isn't triggered by a press on a keyboard
             if (callbackQuery == null) {
-                if (!session.hasStarted()) {
+                if (!sessionManager.sessionHasStarted(chatId)) {
                     bot.greetUser(chatId);
-                    session.start();
+                    sessionManager.startSession(chatId);
                 } else {
                     bot.anounceNewTry(chatId);
                 }
-                quiz.start();
+                sessionManager.startQuiz(chatId);
             } else return;
         } else {
             // ensure user is answering to keyboard
             if (callbackQuery != null) {
                 // ensure user is answering to last question
-                Integer lastSentMessageId = session.getLastSentMessageId();
+                Integer lastSentMessageId = sessionManager.getLastSentMessageId(chatId);
                 if (lastSentMessageId != null &&
                         lastSentMessageId.equals(callbackQuery.maybeInaccessibleMessage().messageId())) {
                     int userCallbackData = Integer.parseInt(callbackQuery.data());
-                    Exercise exercise = quiz.getExercise();
+                    Exercise exercise = sessionManager.getCurrentExercise(chatId);
                     String userAnswer = exercise.answerChoices().get(userCallbackData);
                     bot.repeatUserAnswer(chatId, userAnswer);
-                    quiz.saveAnswerAndSwitchToNextExercise(userCallbackData);
+                    sessionManager.saveAnswerAndSwitchToNextExercise(chatId, userCallbackData);
                 } else return;
             } else {
                 // Say user's input wasn't understood
@@ -63,11 +62,11 @@ public class UpdatesService {
         }
 
         // ask question if quiz not finished, otherwise print results and reset session
-        if (!quiz.isFinished()) {
-            askQuestion(chatId, session);
+        if (!sessionManager.quizIsFinished(chatId)) {
+            askQuestion(chatId);
         } else {
-            bot.publishResults(chatId, quiz.getResults());
-            session.loadNewQuiz();
+            bot.publishResults(chatId, sessionManager.getResults(chatId));
+            sessionManager.loadNewQuiz(chatId);
         }
     }
 
@@ -87,9 +86,9 @@ public class UpdatesService {
         return chatId;
     }
 
-    private void askQuestion(Long chatId, SessionManager.Session session) {
-        Exercise exercise = session.getQuiz().getExercise();
+    private void askQuestion(Long chatId) {
+        Exercise exercise = sessionManager.getCurrentExercise(chatId);
         Integer sentMessageId = bot.askQuestionAndGetMessageId(chatId, exercise);
-        session.setLastSentMessageId(sentMessageId);
+        sessionManager.setLastSentMessageId(chatId, sentMessageId);
     }
 }
