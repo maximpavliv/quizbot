@@ -1,4 +1,4 @@
-package ua.max.quizbot;
+package ua.max.quizbot.utils;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
