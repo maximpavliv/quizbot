@@ -9,9 +9,20 @@ jobs:
   test:
     name: "Integration Testing"
     runs-on: ubuntu-latest
-    env:
-      QUIZBOT_TELEGRAM_TOKEN: ${{secrets.QUIZBOT_TELEGRAM_TOKEN}}
-      JDBC_DATABASE_URL: ${{secrets.JDBC_DATABASE_URL}}
+    services:
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd "pg_isready -U user -d testdb"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -29,8 +40,20 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Install dependencies
         run: mvn install -DskipTests
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until pg_isready -h localhost -p 5432 -U user; do
+            sleep 1
+          done
+      - name: Apply schema
+        run: psql postgresql://user:password@localhost:5432/testdb -f src/main/resources/db/schema.sql
+      - name: Populate data
+        run: psql postgresql://user:password@localhost:5432/testdb -f src/main/resources/db/data.sql
       - name: Build with Maven and Run Integration Tests
-        run: mvn clean verify --batch-mode --fail-at-end
+        env:
+          QUIZBOT_TELEGRAM_TOKEN: ${{secrets.QUIZBOT_TELEGRAM_TOKEN}}
+          JDBC_DATABASE_URL: jdbc:postgresql://localhost:5432/testdb?password=password&user=user
+        run: mvn verify --batch-mode --fail-at-end
 
   deploy:
     name: "Deployment"

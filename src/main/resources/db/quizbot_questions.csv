@@ -1,0 +1,31 @@
+How many primitive data types are there in Java?
+What is the size of float and double in Java?
+In which case is automatic type conversion possible?
+Select the valid statement.
+"When an array is passed to a method, what does the method receive?"
+Select the valid statement to declare and initialize an array.
+Arrays in Java are ____
+When is the object created with new keyword?
+Identify the corrected definition of a package.
+"Identify the keyword among the following that makes a variable belong to a class, rather than being defined for each instance of the class."
+In which of the following is toString() method defined?
+What does compareTo() return?
+To which of the following does the class String belong to?
+How many constructors does the String class have?
+Identify the return type of a method that does not return any value.
+What is the output of Math.floor(3.6)?
+Where does the system store parameters and local variables when a method is invoked?
+Identify the modifier that cannot be used for constructor.
+What are the variables declared in a class for use by all its methods called?
+What is the implicit return type of a constructor?
+When is the finalize() method called?
+Identify the infinite loop.
+What is a Runnable?
+In which block is an Exception created by a try block caught?
+Which of the following exception is thrown when a divided by zero statement is executed?
+Where is the System class defined?
+Identify the interface that is used to declare core methods in Java.
+Which of the following statements are true about the finalize() method?
+What does the >>>> operator do?
+Identify the incorrect Java feature.
+Which of the following is used to find and fix bugs in the program?

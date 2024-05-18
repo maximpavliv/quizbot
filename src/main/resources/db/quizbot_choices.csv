@@ -1,0 +1,124 @@
+1,6
+1,7
+1,8
+1,9
+2,32 and 64
+2,32 and 32
+2,64 and 64
+2,64 and 32
+3,Byte to int
+3,Int to long
+3,Long to int
+3,Short to int
+4,char[] ch = new char(5);
+4,char[] ch = new char[5];
+4,char[] ch = new char();
+4,char[] ch = new char[];
+5,The reference of the array
+5,A copy of the array
+5,Length of the array
+5,Copy of first element
+6,int[] A = {};
+6,"int[] A = {1, 2, 3};"
+6,"int[] A = (1, 2, 3);"
+6,"int[][] A = {1, 2, 3};"
+7,Object references
+7,Objects
+7,Primitive data type
+7,None
+8,At run time
+8,At compile time
+8,Depends on the code
+8,None
+9,A package is a collection of editing tools
+9,A package is a collection of classes
+9,A package is a collection of classes and interfaces
+9,A package is a collection of interfaces
+10,final
+10,static
+10,volatile
+10,abstract
+11,java.lang.Object
+11,java.lang.String
+11,java.lang.util
+11,None
+12,True
+12,False
+12,An int value
+12,None
+13,java.lang
+13,java.awt
+13,java.applet
+13,java.string
+14,3
+14,7
+14,13
+14,20
+15,int
+15,void
+15,double
+15,None
+16,3
+16,3.0
+16,4
+16,4.0
+17,Heap
+17,Stack
+17,Array
+17,Tree
+18,public
+18,protected
+18,private
+18,static
+19,Object
+19,Instance variables
+19,Reference variable
+19,None
+20,No return type
+20,A class object in which it is defined
+20,void
+20,None
+21,Before garbage collection
+21,Before an object goes out of scope
+21,Before a variable goes out of scope
+21,None
+22,for(;;)
+22,for(int i=0; i<1; i—)
+22,for(int i=0; ;i++)
+22,All of them
+23,Abstract class
+23,Interface
+23,Class
+23,Method
+24,catch
+24,throw
+24,final
+24,none
+25,NullPointerException
+25,NumberFormatException
+25,ArithmeticException
+25,None
+26,java.lang.package
+26,java.util.package
+26,java.io.package
+26,None
+27,Comparator
+27,EventListener
+27,Set
+27,Collection
+28,It can be called zero or one times
+28,It can be called zero or more times
+28,It can be called exactly once
+28,It can be called one or more times
+29,Right shift operator
+29,Left shift operator
+29,Zero fill left shift
+29,Zero fill right shift
+30,Object oriented
+30,Use of pointers
+30,Dynamic
+30,Architectural neutral
+31,JDK
+31,JRE
+31,JVM
+31,JDB
