@@ -39,9 +39,9 @@ public class QuizService {
 
     @Transactional
     public Quiz createQuiz(Session session) {
-        List<Question> allQuestions = questionRepository.findAll();
+        List<Long> allQuestionsIds = questionRepository.findAllIds();
 
-        if (QUIZ_LENGTH < 1 || QUIZ_LENGTH > allQuestions.size()){
+        if (QUIZ_LENGTH < 1 || QUIZ_LENGTH > allQuestionsIds.size()){
             throw new RuntimeException("Invalid quiz length");
         }
 
@@ -49,8 +49,10 @@ public class QuizService {
         quizRepository.save(newQuiz);
 
         newQuiz.setSession(session);
-        Collections.shuffle(allQuestions);
-        List<Question> questions = allQuestions.subList(0, QUIZ_LENGTH);
+
+        Collections.shuffle(allQuestionsIds);
+        List<Question> questions = allQuestionsIds.subList(0, QUIZ_LENGTH).stream()
+                .map(questionRepository::getReferenceById).toList();
 
         List<QuizExercise> newQuizExercises = questions.stream()
                 .map(question -> quizExerciseService.createQuizExercise(newQuiz, question, questions.indexOf(question)))
