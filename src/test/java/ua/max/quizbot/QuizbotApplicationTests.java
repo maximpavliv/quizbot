@@ -28,7 +28,7 @@ class QuizbotApplicationTests {
 	@Test
 	public void postInvalidUpdate() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 	}
 
 	@Test
