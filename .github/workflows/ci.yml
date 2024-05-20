@@ -1,13 +1,20 @@
-name: Integration Testing and Deployment
+name: Continuous Integration
 
 on:
   push:
     branches:
+      - '**'
+  pull_request:
+    branches:
       - main
+  workflow_run:
+    workflows: ["Auto Merge PR"]
+    types:
+      - completed
 
 jobs:
   test:
-    name: "Integration Testing"
+    name: "Set up environment and database, and run tests"
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -55,17 +62,3 @@ jobs:
           JDBC_DATABASE_URL: jdbc:postgresql://localhost:5432/testdb?password=password&user=user
         run: mvn verify --batch-mode --fail-at-end
 
-  deploy:
-    name: "Deployment"
-    needs: test
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && success() }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Deploy to Heroku
-        uses: akhileshns/heroku-deploy@v3.13.15
-        with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: "kwizzzzbot"
-          heroku_email: "maxim.pavliv@gmail.com"
