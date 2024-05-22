@@ -110,12 +110,12 @@ public class QuizService {
                 .count();
         String score = correctAnswersCount + "/" + numberQuestions;
 
-        SequencedMap<String, String> corrections = new LinkedHashMap<>();
+        SequencedMap<Integer, String> corrections = new LinkedHashMap<>();
         quizExercises.stream()
                 .filter(quizExercise -> !quizExerciseService.getUserChoice(quizExercise.getQuizExerciseId())
                         .equals(quizExerciseService.getCorrectChoice(quizExercise.getQuizExerciseId())))
                 .forEach(quizExercise -> {
-                            corrections.put(quizExercise.getQuestion().getQuestionText(),
+                            corrections.put(quizExercise.getIdx() + 1,
                                     quizExercise.getQuestion().getAnswer().getChoice().getChoiceText());
                         });
 
