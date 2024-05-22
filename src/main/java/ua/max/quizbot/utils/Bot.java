@@ -44,14 +44,17 @@ public class Bot {
     }
 
     public Integer askQuestionAndGetMessageId(@NotNull Long chatId, Exercise exercise) {
-        List<String> answerChoices = exercise.answerChoices();
+        String questionText = MessageFormat.format(bundle.getString("ask_question_format"),
+                exercise.questionIndex().toString(), exercise.question());
+        SendMessage message = new SendMessage(chatId, questionText);
 
+        List<String> answerChoices = exercise.answerChoices();
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
         for (int i=0; i<answerChoices.size(); i++) {
             keyboard.addRow(new InlineKeyboardButton(answerChoices.get(i)).callbackData(String.valueOf(i)));
         }
 
-        SendResponse response = telegramBot.execute(new SendMessage(chatId, exercise.question()).replyMarkup(keyboard));
+        SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
 
         Integer messageId = null;
         if (response != null && response.message() != null)
@@ -69,10 +72,10 @@ public class Bot {
 
     public void publishResults(@NotNull Long chatId, @NotNull QuizResults results) {
         sendMessage(chatId, bundle.getString("quiz_finished_message") + results.score());
-        SequencedMap<String, String> corrections = results.corrections();
-        for (String question : corrections.sequencedKeySet()) {
+        SequencedMap<Integer, String> corrections = results.corrections();
+        for (Integer exerciseIdx : corrections.sequencedKeySet()) {
             sendMessage(chatId, MessageFormat.format(
-                    bundle.getString("correct_answer_to_question_was"), question, corrections.get(question)));
+                    bundle.getString("correct_answer_to_question_was"), exerciseIdx, corrections.get(exerciseIdx)));
         }
     }
 
