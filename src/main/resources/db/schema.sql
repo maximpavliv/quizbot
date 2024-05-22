@@ -1,24 +1,24 @@
--- Create Question table
-CREATE TABLE Question (
+-- Create question table
+CREATE TABLE question (
     question_id SERIAL PRIMARY KEY,
     question_text TEXT NOT NULL
 );
--- Create Choice table
-CREATE TABLE Choice (
+-- Create choice table
+CREATE TABLE choice (
     choice_id SERIAL PRIMARY KEY,
     question_id INT NOT NULL,
     choice_text TEXT NOT NULL,
-    FOREIGN KEY (question_id) REFERENCES Question(question_id) ON DELETE CASCADE
+    FOREIGN KEY (question_id) REFERENCES question(question_id) ON DELETE CASCADE
 );
--- Create Answer table
-CREATE TABLE Answer (
+-- Create answer table
+CREATE TABLE answer (
     answer_id SERIAL PRIMARY KEY,
-    question_id INT NOT NULL,
-    choice_id INT NOT NULL,
-    FOREIGN KEY (question_id) REFERENCES Question(question_id) ON DELETE CASCADE,
-    FOREIGN KEY (choice_id) REFERENCES Choice(choice_id) ON DELETE CASCADE
+    question_id INT NOT NULL UNIQUE,
+    choice_id INT NOT NULL UNIQUE,
+    FOREIGN KEY (question_id) REFERENCES question(question_id) ON DELETE CASCADE,
+    FOREIGN KEY (choice_id) REFERENCES choice(choice_id) ON DELETE CASCADE
 );
--- Create Session table
+-- Create user_session table
 CREATE TABLE user_session (
     session_id SERIAL PRIMARY KEY,
     chat_id BIGINT,
@@ -26,15 +26,15 @@ CREATE TABLE user_session (
     last_activity_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     started BOOLEAN
 );
--- Create Quiz table
-create table quiz (
+-- Create quiz table
+CREATE TABLE quiz (
     quiz_id SERIAL PRIMARY key,
     session_id BIGINT UNIQUE,
     started BOOLEAN,
     current_exercise_idx INT,
-    foreign key (session_id) references user_session(session_id) on delete CASCADE
+    FOREIGN KEY (session_id) REFERENCES user_session(session_id) ON DELETE CASCADE
 );
--- Create QuizExercise table
+-- Create quiz_exercise table
 CREATE TABLE quiz_exercise (
     quiz_exercise_id SERIAL PRIMARY KEY,
     quiz_id BIGINT,
@@ -43,7 +43,7 @@ CREATE TABLE quiz_exercise (
     FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id) ON DELETE CASCADE,
     FOREIGN KEY (question_id) REFERENCES question(question_id) ON DELETE CASCADE
 );
--- Create QuizExerciseChoice table
+-- Create quiz_exercise_choice table
 CREATE TABLE quiz_exercise_choice (
     quiz_exercise_choice_id SERIAL PRIMARY KEY,
     quiz_exercise_id BIGINT,
@@ -52,7 +52,7 @@ CREATE TABLE quiz_exercise_choice (
     FOREIGN KEY (quiz_exercise_id) REFERENCES quiz_exercise(quiz_exercise_id) ON DELETE CASCADE,
     FOREIGN KEY (choice_id) REFERENCES choice(choice_id) ON DELETE CASCADE
 );
--- Add reference to QuizExerciseChoice in QuizExercise
+-- Add reference to quiz_exercise_choice in quiz_exercise
 ALTER TABLE quiz_exercise
 ADD COLUMN user_quiz_exercise_choice_id BIGINT;
 ALTER TABLE quiz_exercise
