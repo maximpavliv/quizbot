@@ -3,6 +3,14 @@ CREATE TABLE question (
     question_id SERIAL PRIMARY KEY,
     question_text TEXT NOT NULL
 );
+-- Create snippet table
+CREATE TABLE snippet (
+    snippet_id SERIAL PRIMARY KEY,
+    snippet_language VARCHAR(30),
+    snippet_text text NOT NULL,
+    question_id INT NOT NULL UNIQUE,
+    FOREIGN KEY (question_id) REFERENCES question(question_id) ON DELETE CASCADE
+);
 -- Create choice table
 CREATE TABLE choice (
     choice_id SERIAL PRIMARY KEY,

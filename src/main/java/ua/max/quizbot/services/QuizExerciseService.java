@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.max.quizbot.models.*;
 import ua.max.quizbot.records.Exercise;
+import ua.max.quizbot.records.ExerciseSnippet;
 import ua.max.quizbot.repositories.QuizExerciseRepository;
 
 import java.util.Collections;
@@ -53,8 +54,15 @@ public class QuizExerciseService {
     public Exercise getExercise(Long quizExerciseId) {
         QuizExercise quizExercise = quizExerciseRepository.getReferenceById(quizExerciseId);
         Question question = quizExercise.getQuestion();
+        ExerciseSnippet snippet = null;
+        if (question.getSnippet() != null) {
+            String snippetLanguage  = question.getSnippet().getSnippetLanguage();
+            snippet = new ExerciseSnippet(snippetLanguage != null ? snippetLanguage : "",
+                    question.getSnippet().getSnippetText());
+        }
         return new Exercise(quizExercise.getIdx() + 1,
                 question.getQuestionText(),
+                snippet,
                 quizExercise.getQuizExerciseChoices().stream()
                         .map(QuizExerciseChoice::getChoice).map(Choice::getChoiceText)
                         .collect(Collectors.toList()));
