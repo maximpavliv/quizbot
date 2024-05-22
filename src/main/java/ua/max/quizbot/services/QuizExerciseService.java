@@ -52,7 +52,9 @@ public class QuizExerciseService {
     @Transactional
     public Exercise getExercise(Long quizExerciseId) {
         QuizExercise quizExercise = quizExerciseRepository.getReferenceById(quizExerciseId);
-        return new Exercise(quizExercise.getQuestion().getQuestionText(),
+        Question question = quizExercise.getQuestion();
+        return new Exercise(quizExercise.getIdx() + 1,
+                question.getQuestionText(),
                 quizExercise.getQuizExerciseChoices().stream()
                         .map(QuizExerciseChoice::getChoice).map(Choice::getChoiceText)
                         .collect(Collectors.toList()));
