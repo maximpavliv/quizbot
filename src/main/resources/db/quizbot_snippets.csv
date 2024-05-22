@@ -82,3 +82,235 @@ do {
   System.out.println(""QuizBot"");
   count++;
 } while (count < 10);",50
+java,"class Increment {
+    public static void main(String args[]) {
+        int g = 3;
+        System.out.print(++g * 8);
+    }
+}",56
+java,"class Output {
+    public static void main(String args[]) {
+        double a, b,c;
+        a = 3.0/0;
+        b = 0/4.0;
+        c = 0/0.0;
+
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+    }
+}",58
+java,"class VariableScope {
+    public static void main(String args[]) {
+        int x;
+        x = 5;
+        {
+            int y = 6;
+            System.out.print(x + "" "" + y);
+        }
+        System.out.println(x + "" "" + y);
+    }
+}",61
+java,"class LeftShiftOperator {
+    public static void main(String args[]) {
+        byte x = 64;
+        int i;
+        byte y;
+        i = x << 2;
+        y = (byte) (x << 2);
+        System.out.print(i + "" "" + y);
+    }
+}",63
+java,"class Box {
+    int width;
+    int height;
+    int length;
+}
+class Main {
+    public static void main(String args[]) {
+        box obj = new box();
+        obj.width = 10;
+        obj.height = 2;
+        obj.length = 10;
+        int y = obj.width * obj.height * obj.length;
+        System.out.print(y);
+    }
+}",64
+java,"class Output {
+    public static void main(String args[]) {
+        int arr[] = {1, 2, 3, 4, 5};
+        for (int i = 0; i < arr.length - 2;++i)
+            System.out.println(arr[i] + "" "");
+    }
+}",66
+java,"class Abc {
+    public static void main(String args[]) {
+        if(args.length > 0)
+            System.out.println(args.length);
+    }
+}",67
+java,"class StringDemo {
+    public static void main(String args[]) {
+        char chars[] = {'a', 'b', 'c'};
+        String s = new String(chars);
+        System.out.println(s);
+    }
+}",70
+java,"class Recursion {
+    int func(int n) {
+        int result;
+        if (n == 1)
+            return 1;
+        result = func (n - 1);
+        return result;
+    }
+}
+class Output {
+    public static void main(String args[]) {
+        recursion obj = new recursion();
+        System.out.print(obj.func(5));
+    }
+}",72
+java,"class Output {
+    public static void main(String args[]) {
+        String c = ""Hello i love java"";
+        boolean var;
+        var = c.startsWith(""hello"");
+        System.out.println(var);
+    }
+}",73
+java,"class Output {
+    public static void main(String args[]) {
+        StringBuffer s1 = new StringBuffer(""Quiz"");
+        StringBuffer s2 = s1.reverse();
+        System.out.println(s2);
+    }
+}",75
+java,"class Output {
+    public static void main(String args[]) {
+        Integer i = new Integer(257);
+        byte x = i.byteValue();
+        System.out.print(x);
+    }
+}",76
+java,"class Output {
+    public static void main(String args[]) {
+        double x = 2.0;
+        double y = 3.0;
+        double z = Math.pow( x, y );
+        System.out.print(z);
+    }
+}",77
+java,"class Output {
+    public static void main(String args[]) {
+        double x = 3.14;
+        int y = (int) Math.ceil(x);
+        System.out.print(y);
+    }
+}",79
+java,"import java.net.*;
+class Networking {
+    public static void main(String[] args) throws Exception {
+        URL obj = new URL(""https://www.sanfoundry.com/javamcq"");
+        URLConnection obj1 = obj.openConnection();
+        int len = obj1.getContentLength();
+        System.out.print(len);
+    }
+}",80
+java,"import java.net.*;
+class Networking {
+    public static void main(String[] args) throws MalformedURLException {
+        URL obj = new URL(""https://www.sanfoundry.com/javamcq"");
+        System.out.print(obj.toExternalForm());
+    }
+}",82
+java,"import java.util.*;
+class Arraylists {
+    public static void main(String args[]) {
+        ArrayLists obj = new ArrayLists();
+        obj.add(""A"");
+        obj.add(""B"");
+        obj.add(""C"");
+        obj.add(1, ""D"");
+        System.out.println(obj);
+    }
+}",83
+java,"import java.util.*;
+class CollectionIterators {
+    public static void main(String args[]) {
+        LinkedList list = new LinkedList();
+        list.add(new Integer(2));
+        list.add(new Integer(8));
+        list.add(new Integer(5));
+        list.add(new Integer(1));
+        Iterator i = list.iterator();
+        Collections.reverse(list);
+        Collections.sort(list);
+        while(i.hasNext())
+            System.out.print(i.next() + "" "");
+    }
+}",85
+java,"class NewThread extends Thread {
+    Thread t;
+    NewThread() {
+        t1 = new Thread(this,""Thread_1"");
+        t2 = new Thread(this,""Thread_2"");
+        t1.start();
+        t2.start();
+    }
+
+    public void run() {
+        t2.setPriority(Thread.MAX_PRIORITY);
+        System.out.print(t1.equals(t2));
+    }
+}
+
+class MultithreadedPrograming {
+    public static void main(String args[]) {
+        new NewThread();
+    }
+}",87
+java,"final class A {
+    int i;
+}
+
+class B extends A {
+    int j;
+    System.out.println(j + "" "" + i);
+}
+
+class Inheritance {
+    public static void main(String args[]) {
+        B obj = new B();
+        obj.display();
+    }
+}",89
+java,"class Overload {
+    int x;
+    double y;
+
+    void add(int a , int b) {
+        x = a + b;
+    }
+
+    void add(double c , double d) {
+        y = c + d;
+    }
+
+    overload() {
+        this.x = 0;
+        this.y = 0;
+    }
+}
+
+class OverloadMethods
+{
+    public static void main(String args[]) {
+        overload obj = new overload();
+        int a = 2;
+        double b = 3.2;
+        obj.add(a, a);
+        obj.add(b, b);
+        System.out.println(obj.x + "" "" + obj.y);
+    }
+}",92
