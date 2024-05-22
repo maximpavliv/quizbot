@@ -3,6 +3,7 @@ package ua.max.quizbot.utils;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,11 @@ public class Bot {
     public Integer askQuestionAndGetMessageId(@NotNull Long chatId, Exercise exercise) {
         String questionText = MessageFormat.format(bundle.getString("ask_question_format"),
                 exercise.questionIndex().toString(), exercise.question());
-        SendMessage message = new SendMessage(chatId, questionText);
+        if (exercise.snippet() != null) {
+            questionText += MessageFormat.format(bundle.getString("add_snippet_format"),
+                    exercise.snippet().language(), exercise.snippet().snippet());
+        }
+        SendMessage message = new SendMessage(chatId, questionText).parseMode(ParseMode.Markdown);
 
         List<String> answerChoices = exercise.answerChoices();
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();

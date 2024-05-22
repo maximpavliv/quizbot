@@ -122,3 +122,79 @@
 31,JRE
 31,JVM
 31,JDB
+32,Compile error
+32,Throws exception
+32,I
+32,24 I
+33,50
+33,10
+33,Compile error
+33,Exception
+34,-127
+34,127
+34,129
+34,2
+35,120 200 016
+35,120 200 14
+35,120 200 16
+35,None
+36,0
+36,1
+36,2
+36,3
+37,1 and 2
+37,2 and 3
+37,Only 3
+37,"1, 2 and 3"
+38,Any class
+38,Only Solution class
+38,Any class that extends Solution
+38,None
+39,abc
+39,bc
+39,bcd
+39,cd
+40,0
+40,1
+40,true
+40,-1
+41,one
+41,two
+41,onetwo
+41,twoone
+42,Replaces single occurence of 'z' to 's'
+42,Replaces all occurences of 'z' to 's'
+42,Replaces single occurence of 's' to 'z'
+42,None
+43,2
+43,3
+43,4
+43,None
+44,101
+44,Compile error as ++a is not valid identifier
+44,100
+44,None
+45,TRUE
+45,FALSE
+45,Compile error
+45,None
+46,50
+46,22
+46,10
+46,None
+47,Solution(void)
+47,Solution()
+47,public Solution(void)
+47,public Solution()
+48,A. Solution(){}
+48,B. public Solution(){}
+48,C. Solution(void){}
+48,D. Both (A) and (B)
+49,3
+49,4
+49,5
+49,6
+50,8
+50,9
+50,10
+50,11

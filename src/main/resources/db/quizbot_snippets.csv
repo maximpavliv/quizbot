@@ -1,0 +1,84 @@
+java,"int Integer = 24;
+char String = 'I';
+System.out.print(Integer);
+System.out.print(String);",32
+java,"public class Solution {
+    public static void main(String[] args) {
+        short x = 10;
+        x = x*5;
+        System.out.print(x);
+    }
+}",33
+java,"public class Solution {
+    public static void main(String[] args) {
+        byte x = 127;
+        x++;
+        x++;
+        System.out.print(x);
+    }
+}",34
+java,"public class Solution {
+    public static void main(String[] args) {
+        int[] x = {120, 200, 016};
+        for (int i=0; i<x.length; i++) {
+            System.out.print(x[i] + "" "");
+        }
+    }
+}",35
+java,"int[] A = {0, 2, 4, 1, 3};
+for (int i=0; i<A.length; i++) {
+    A[i] = A[(A[i] + 3) % A.length];
+}",36
+,"1. They must access only static data.
+2. They can only call other static methods.
+3. They cannot refer to this or super.",37
+java,"package com.mypackage;
+public class Solution {
+    private int res = 100;
+}",38
+java,"String str = ""abcde"";
+System.out.println(str.substring(1, 3));",39
+java,"String str = ""Hellow"";
+System.out.println(str.indexOf('t'));",40
+java,"public class Test {
+    public static void main(String args[]) {
+        String str1 = ""one"";
+        String str2 = ""two"";
+        System.out.println(str1.concat(str2));
+    }
+}",41
+java,"String str1 = ""QuizBot"".replace('z','s');",42
+java,"String a = new String(""QuizBot"");
+String b = new String(""QuizBot"");
+Strinc c = ""QuizBot"";
+String d = ""QuizBot"";",43
+java,"int ++a = 100;
+System.out.println(++a);",44
+java,"if (1 + 1 + 1 + 1 + 1 == 5) {
+    System.out.print(""TRUE"");
+} else {
+    System.out.print(""FALSE"");
+}",45
+java,"public class Solution {
+    public static void main(String… args) {
+        int x = 5;
+        x * = (3 + 7);
+        System.out.println(x);
+    }
+}",46
+java,"public class Solution {}",47
+java,"public class Solution {}",48
+java,"public class Solution {
+    public static void main(String args[]) {
+        int i;
+        for (i=1; i<6; i++) { 
+            if (i > 3) continue;
+        }
+        System.out.println(i);
+    }
+}",49
+java,"int count = 0;
+do {
+  System.out.println(""QuizBot"");
+  count++;
+} while (count < 10);",50

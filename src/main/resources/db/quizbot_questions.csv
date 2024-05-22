@@ -4,7 +4,7 @@ In which case is automatic type conversion possible?
 Select the valid statement.
 "When an array is passed to a method, what does the method receive?"
 Select the valid statement to declare and initialize an array.
-Arrays in Java are ____
+"In Java, Arrays are \_\_\_."
 When is the object created with new keyword?
 Identify the corrected definition of a package.
 "Identify the keyword among the following that makes a variable belong to a class, rather than being defined for each instance of the class."
@@ -29,3 +29,22 @@ Which of the following statements are true about the finalize() method?
 What does the >>>> operator do?
 Identify the incorrect Java feature.
 Which of the following is used to find and fix bugs in the program?
+Find the output of the following code.
+Find the output of the following program.
+Find the output of the following program.
+Find the output of the following program.
+Find the value of A[[1]] after execution of the following program.
+Identify the correct restriction on static methods.
+Which of the following can directly access and change the value of the variable res?
+Identify the output of the following program.
+Identify the output of the following program.
+Identify the output of the following program.
+What does the following operation do to given string?
+How many objects will be created in the following code?
+Find the output of the following code.
+Find the output of the following code.
+Find the output of the following code.
+Identify the prototype of the default constructor.
+Identify the correct way of declaring a constructor.
+Find the output of the following code.
+"How many times will ""QuizBot"" be printed?"

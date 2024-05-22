@@ -18,6 +18,9 @@ public class Question {
     @OneToOne(mappedBy = "question")
     private Answer answer;
 
+    @OneToOne(mappedBy = "question")
+    private Snippet snippet;
+
     public Long getQuestionId() {
         return questionId;
     }
@@ -47,5 +50,13 @@ public class Question {
 
     public void setAnswer(Answer answer) {
         this.answer = answer;
+    }
+
+    public Snippet getSnippet() {
+        return snippet;
+    }
+
+    public void setSnippet(Snippet snippet) {
+        this.snippet = snippet;
     }
 }
