@@ -31,8 +31,7 @@ CREATE TABLE user_session (
     session_id SERIAL PRIMARY KEY,
     chat_id BIGINT,
     last_sent_message_id INTEGER,
-    last_activity_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    started BOOLEAN
+    last_activity_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- Create quiz table
 CREATE TABLE quiz (

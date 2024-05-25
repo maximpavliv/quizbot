@@ -63,20 +63,6 @@ public class SessionService {
         newSession.setLastSentMessageId(null);
         newSession.setChatId(chatId);
         newSession.setLastActivityTime(LocalDateTime.now());
-        newSession.setStarted(false);
-    }
-
-    @Transactional
-    public boolean sessionHasStarted(Long chatId) {
-        Session session = sessionRepository.findByChatId(chatId);
-        return session.getStarted();
-    }
-
-    @Transactional
-    public void startSession(Long chatId) {
-        Session session = sessionRepository.findByChatId(chatId);
-        session.setStarted(true);
-        updateLastActivityTime(chatId);
     }
 
     @Transactional

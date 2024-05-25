@@ -20,8 +20,6 @@ public class Session {
 
     private LocalDateTime lastActivityTime;
 
-    private boolean started;
-
     public Session() {}
 
     public Long getChatId() {
@@ -54,13 +52,5 @@ public class Session {
 
     public void setLastActivityTime(LocalDateTime lastActivityTime) {
         this.lastActivityTime = lastActivityTime;
-    }
-
-    public boolean getStarted() {
-        return started;
-    }
-
-    public void setStarted(boolean started) {
-        this.started = started;
     }
 }

@@ -27,15 +27,17 @@ public class UpdatesService {
 
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        if (!sessionService.sessionExists(chatId))
+        boolean createdNewSession = false;
+        if (!sessionService.sessionExists(chatId)) {
             sessionService.createSession(chatId);
+            createdNewSession = true;
+        }
 
         if (!sessionService.quizIsStarted(chatId)) {
             // ensure that this isn't triggered by a press on a keyboard
             if (callbackQuery == null) {
-                if (!sessionService.sessionHasStarted(chatId)) {
+                if (createdNewSession) {
                     bot.greetUser(chatId);
-                    sessionService.startSession(chatId);
                 } else {
                     bot.anounceNewTry(chatId);
                 }
