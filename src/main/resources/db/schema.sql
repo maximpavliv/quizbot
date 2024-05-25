@@ -32,13 +32,12 @@ CREATE TABLE user_session (
     chat_id BIGINT,
     last_sent_message_id INTEGER,
     last_activity_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    started BOOLEAN
+    state VARCHAR(30)
 );
 -- Create quiz table
 CREATE TABLE quiz (
     quiz_id SERIAL PRIMARY key,
     session_id BIGINT UNIQUE,
-    started BOOLEAN,
     current_exercise_idx INT,
     FOREIGN KEY (session_id) REFERENCES user_session(session_id) ON DELETE CASCADE
 );

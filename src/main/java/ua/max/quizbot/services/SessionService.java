@@ -63,34 +63,19 @@ public class SessionService {
         newSession.setLastSentMessageId(null);
         newSession.setChatId(chatId);
         newSession.setLastActivityTime(LocalDateTime.now());
-        newSession.setStarted(false);
+        newSession.setState(Session.State.NEW_SESSION);
     }
 
     @Transactional
-    public boolean sessionHasStarted(Long chatId) {
+    public Session.State getSessionState(Long chatId) {
         Session session = sessionRepository.findByChatId(chatId);
-        return session.getStarted();
+        return session.getState();
     }
 
     @Transactional
-    public void startSession(Long chatId) {
+    public void setSessionState(Long chatId, Session.State state) {
         Session session = sessionRepository.findByChatId(chatId);
-        session.setStarted(true);
-        updateLastActivityTime(chatId);
-    }
-
-    @Transactional
-    public boolean quizIsStarted(Long chatId) {
-        Session session = sessionRepository.findByChatId(chatId);
-        Quiz quiz = quizService.findQuizById(session.getQuiz().getQuizId());
-        return quiz.getStarted();
-    }
-
-    @Transactional
-    public void startQuiz(Long chatId) {
-        Session session = sessionRepository.findByChatId(chatId);
-        Quiz quiz = quizService.findQuizById(session.getQuiz().getQuizId());
-        quiz.setStarted(true);
+        session.setState(state);
         updateLastActivityTime(chatId);
     }
 
