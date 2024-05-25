@@ -18,8 +18,6 @@ public class Quiz {
     @OrderBy("idx ASC")
     private List<QuizExercise> quizExercises;
 
-    private Boolean started;
-
     private Integer currentExerciseIdx;
 
     public Long getQuizId() {
@@ -44,14 +42,6 @@ public class Quiz {
 
     public void setQuizExercises(List<QuizExercise> quizExercises) {
         this.quizExercises = quizExercises;
-    }
-
-    public Boolean getStarted() {
-        return started;
-    }
-
-    public void setStarted(Boolean started) {
-        this.started = started;
     }
 
     public Integer getCurrentExerciseIdx() {
