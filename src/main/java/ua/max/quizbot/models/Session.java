@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "UserSession")
 public class Session {
+    public enum State {
+        QUIZ_NOT_STARTED,
+        QUIZ_STARTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long sessionId;
@@ -19,6 +24,9 @@ public class Session {
     private Integer lastSentMessageId;
 
     private LocalDateTime lastActivityTime;
+
+    @Enumerated(EnumType.STRING)
+    private State state;
 
     public Session() {}
 
@@ -52,5 +60,13 @@ public class Session {
 
     public void setLastActivityTime(LocalDateTime lastActivityTime) {
         this.lastActivityTime = lastActivityTime;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }

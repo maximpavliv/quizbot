@@ -59,7 +59,6 @@ public class QuizService {
                 .toList();
 
         newQuiz.setQuizExercises(newQuizExercises);
-        newQuiz.setStarted(false);
         newQuiz.setCurrentExerciseIdx(0);
 
         return newQuiz;
