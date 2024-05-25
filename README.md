@@ -14,5 +14,6 @@ This project demonstrates basic Back-End and Deployment features:
 - The database also stores the sessions with their respective quizes, so that users are not affected after new deployments.
 - Quizes are created by randomly picking 5 questions from the database, possible choices are shuffled.
 - No pushes to the remote main branch are allowed, new features must be merged via pull requests. The pull requests are tested, merging is impossible if tests fail.
+- Separate development and production environments are used (separate bot tokens and databases). Additionally, a database is set up in the CI process in order to keep the development and production databases isolated.
 - Questions can contain code snippets.
 - ...
