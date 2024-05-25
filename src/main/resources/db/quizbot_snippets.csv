@@ -110,7 +110,7 @@ java,"class VariableScope {
         }
         System.out.println(x + "" "" + y);
     }
-}",61
+}",60
 java,"class LeftShiftOperator {
     public static void main(String args[]) {
         byte x = 64;
@@ -120,7 +120,7 @@ java,"class LeftShiftOperator {
         y = (byte) (x << 2);
         System.out.print(i + "" "" + y);
     }
-}",63
+}",62
 java,"class Box {
     int width;
     int height;
@@ -135,27 +135,27 @@ class Main {
         int y = obj.width * obj.height * obj.length;
         System.out.print(y);
     }
-}",64
+}",63
 java,"class Output {
     public static void main(String args[]) {
         int arr[] = {1, 2, 3, 4, 5};
         for (int i = 0; i < arr.length - 2;++i)
             System.out.println(arr[i] + "" "");
     }
-}",66
+}",65
 java,"class Abc {
     public static void main(String args[]) {
         if(args.length > 0)
             System.out.println(args.length);
     }
-}",67
+}",66
 java,"class StringDemo {
     public static void main(String args[]) {
         char chars[] = {'a', 'b', 'c'};
         String s = new String(chars);
         System.out.println(s);
     }
-}",70
+}",69
 java,"class Recursion {
     int func(int n) {
         int result;
@@ -170,7 +170,7 @@ class Output {
         recursion obj = new recursion();
         System.out.print(obj.func(5));
     }
-}",72
+}",71
 java,"class Output {
     public static void main(String args[]) {
         String c = ""Hello i love java"";
@@ -178,21 +178,21 @@ java,"class Output {
         var = c.startsWith(""hello"");
         System.out.println(var);
     }
-}",73
+}",72
 java,"class Output {
     public static void main(String args[]) {
         StringBuffer s1 = new StringBuffer(""Quiz"");
         StringBuffer s2 = s1.reverse();
         System.out.println(s2);
     }
-}",75
+}",74
 java,"class Output {
     public static void main(String args[]) {
         Integer i = new Integer(257);
         byte x = i.byteValue();
         System.out.print(x);
     }
-}",76
+}",75
 java,"class Output {
     public static void main(String args[]) {
         double x = 2.0;
@@ -200,14 +200,14 @@ java,"class Output {
         double z = Math.pow( x, y );
         System.out.print(z);
     }
-}",77
+}",76
 java,"class Output {
     public static void main(String args[]) {
         double x = 3.14;
         int y = (int) Math.ceil(x);
         System.out.print(y);
     }
-}",79
+}",78
 java,"import java.net.*;
 class Networking {
     public static void main(String[] args) throws Exception {
@@ -216,14 +216,14 @@ class Networking {
         int len = obj1.getContentLength();
         System.out.print(len);
     }
-}",80
+}",79
 java,"import java.net.*;
 class Networking {
     public static void main(String[] args) throws MalformedURLException {
         URL obj = new URL(""https://www.sanfoundry.com/javamcq"");
         System.out.print(obj.toExternalForm());
     }
-}",82
+}",81
 java,"import java.util.*;
 class Arraylists {
     public static void main(String args[]) {
@@ -234,7 +234,7 @@ class Arraylists {
         obj.add(1, ""D"");
         System.out.println(obj);
     }
-}",83
+}",82
 java,"import java.util.*;
 class CollectionIterators {
     public static void main(String args[]) {
@@ -249,7 +249,7 @@ class CollectionIterators {
         while(i.hasNext())
             System.out.print(i.next() + "" "");
     }
-}",85
+}",84
 java,"class NewThread extends Thread {
     Thread t;
     NewThread() {
@@ -269,7 +269,7 @@ class MultithreadedPrograming {
     public static void main(String args[]) {
         new NewThread();
     }
-}",87
+}",86
 java,"final class A {
     int i;
 }
@@ -284,7 +284,7 @@ class Inheritance {
         B obj = new B();
         obj.display();
     }
-}",89
+}",88
 java,"class Overload {
     int x;
     double y;
@@ -313,4 +313,4 @@ class OverloadMethods
         obj.add(b, b);
         System.out.println(obj.x + "" "" + obj.y);
     }
-}",92
+}",91
