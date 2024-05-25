@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.max.quizbot.models.Session;
 import ua.max.quizbot.records.Exercise;
 import ua.max.quizbot.utils.Bot;
 
@@ -27,47 +28,45 @@ public class UpdatesService {
 
         CallbackQuery callbackQuery = update.callbackQuery();
 
-        boolean createdNewSession = false;
-        if (!sessionService.sessionExists(chatId)) {
+        if (!sessionService.sessionExists(chatId))
             sessionService.createSession(chatId);
-            createdNewSession = true;
-        }
 
-        if (!sessionService.quizIsStarted(chatId)) {
-            // ensure that this isn't triggered by a press on a keyboard
-            if (callbackQuery == null) {
-                if (createdNewSession) {
+        Session.State state = sessionService.getSessionState(chatId);
+        switch (state) {
+            case NEW_SESSION:
+                if (callbackQuery == null) {
                     bot.greetUser(chatId);
-                } else {
-                    bot.anounceNewTry(chatId);
+                    askQuestion(chatId);
+                    sessionService.setSessionState(chatId, Session.State.SOLVING_EXERCISES);
                 }
-                sessionService.startQuiz(chatId);
-            } else return;
-        } else {
-            // ensure user is answering to keyboard
-            if (callbackQuery != null) {
-                // ensure user is answering to last question
-                Integer lastSentMessageId = sessionService.getLastSentMessageId(chatId);
-                if (lastSentMessageId != null &&
-                        lastSentMessageId.equals(callbackQuery.maybeInaccessibleMessage().messageId())) {
-                    int userCallbackData = Integer.parseInt(callbackQuery.data());
-                    Exercise exercise = sessionService.getCurrentExercise(chatId);
-                    String userAnswer = exercise.answerChoices().get(userCallbackData);
-                    bot.repeatUserAnswer(chatId, userAnswer);
-                    sessionService.saveAnswerAndSwitchToNextExercise(chatId, userCallbackData);
-                } else return;
-            } else {
-                // Say user's input wasn't understood
-                bot.warnMessageNotUnderstood(chatId);
-            }
-        }
-
-        // ask question if quiz not finished, otherwise print results and reset session
-        if (!sessionService.quizIsFinished(chatId)) {
-            askQuestion(chatId);
-        } else {
-            bot.publishResults(chatId, sessionService.getResults(chatId));
-            sessionService.loadNewQuiz(chatId);
+                break;
+            case SOLVING_EXERCISES:
+                if (callbackQuery != null) {
+                    if (answeringLastSentMessage(chatId, callbackQuery)) {
+                        processAnswer(chatId, Integer.parseInt(callbackQuery.data()));
+                    } else {
+                        break;
+                    }
+                } else {
+                    bot.warnMessageNotUnderstood(chatId);
+                }
+                if (!sessionService.quizIsFinished(chatId)) {
+                    askQuestion(chatId);
+                } else {
+                    bot.publishResults(chatId, sessionService.getResults(chatId));
+                    offerNewTry(chatId);
+                    sessionService.setSessionState(chatId, Session.State.NEW_TRY);
+                }
+                break;
+            case NEW_TRY:
+                if (callbackQuery != null)
+                    if (!answeringLastSentMessage(chatId, callbackQuery))
+                        break;
+                bot.anounceNewTry(chatId);
+                sessionService.loadNewQuiz(chatId);
+                askQuestion(chatId);
+                sessionService.setSessionState(chatId, Session.State.SOLVING_EXERCISES);
+                break;
         }
     }
 
@@ -87,9 +86,31 @@ public class UpdatesService {
         return chatId;
     }
 
+    public boolean answeringLastSentMessage(Long chatId, CallbackQuery callbackQuery) {
+        if (callbackQuery == null)
+            return false;
+        Integer lastSentMessageId = sessionService.getLastSentMessageId(chatId);
+        if (lastSentMessageId != null &&
+                lastSentMessageId.equals(callbackQuery.maybeInaccessibleMessage().messageId()))
+            return true;
+        return false;
+    }
+
     private void askQuestion(Long chatId) {
         Exercise exercise = sessionService.getCurrentExercise(chatId);
         Integer sentMessageId = bot.askQuestionAndGetMessageId(chatId, exercise);
+        sessionService.setLastSentMessageId(chatId, sentMessageId);
+    }
+
+    private void processAnswer(Long chatId, int userCallbackData) {
+        Exercise exercise = sessionService.getCurrentExercise(chatId);
+        String userAnswer = exercise.answerChoices().get(userCallbackData);
+        bot.repeatUserAnswer(chatId, userAnswer);
+        sessionService.saveAnswerAndSwitchToNextExercise(chatId, userCallbackData);
+    }
+
+    private void offerNewTry(Long chatId) {
+        Integer sentMessageId = bot.offerNewTry(chatId);
         sessionService.setLastSentMessageId(chatId, sentMessageId);
     }
 }

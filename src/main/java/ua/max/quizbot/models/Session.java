@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 @Table(name = "UserSession")
 public class Session {
     public enum State {
-        QUIZ_NOT_STARTED,
-        QUIZ_STARTED
+        NEW_SESSION,
+        SOLVING_EXERCISES,
+        NEW_TRY
     }
 
     @Id

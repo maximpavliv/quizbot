@@ -67,6 +67,19 @@ public class Bot {
         return messageId;
     }
 
+    public Integer offerNewTry(Long chatId) {
+        SendMessage message = new SendMessage(chatId, bundle.getString("offer_new_try"));
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup()
+                .addRow(new InlineKeyboardButton("OK").callbackData("OK"));
+
+        SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
+
+        Integer messageId = null;
+        if (response != null && response.message() != null)
+            messageId = response.message().messageId();
+        return messageId;
+    }
+
     public void repeatUserAnswer(@NotNull Long chatId, String userAnswer) {
         sendMessage(chatId, bundle.getString("users_answer_is") + userAnswer);
     }
