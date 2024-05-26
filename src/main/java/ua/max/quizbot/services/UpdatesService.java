@@ -86,7 +86,7 @@ public class UpdatesService {
         return chatId;
     }
 
-    public boolean answeringLastSentMessage(Long chatId, CallbackQuery callbackQuery) {
+    private boolean answeringLastSentMessage(Long chatId, CallbackQuery callbackQuery) {
         if (callbackQuery == null)
             return false;
         Integer lastSentMessageId = sessionService.getLastSentMessageId(chatId);
@@ -110,7 +110,7 @@ public class UpdatesService {
     }
 
     private void offerNewTry(Long chatId) {
-        Integer sentMessageId = bot.offerNewTry(chatId);
+        Integer sentMessageId = bot.offerNewTryAndGetMessageId(chatId);
         sessionService.setLastSentMessageId(chatId, sentMessageId);
     }
 }

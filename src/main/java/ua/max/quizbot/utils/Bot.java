@@ -40,10 +40,6 @@ public class Bot {
         sendMessage(chatId, bundle.getString("quiz_starting_message"));
     }
 
-    public void anounceNewTry(@NotNull Long chatId) {
-        sendMessage(chatId, bundle.getString("quiz_new_try_message"));
-    }
-
     public Integer askQuestionAndGetMessageId(@NotNull Long chatId, Exercise exercise) {
         String questionText = MessageFormat.format(bundle.getString("ask_question_format"),
                 exercise.questionIndex().toString(), exercise.question());
@@ -58,19 +54,6 @@ public class Bot {
         for (int i=0; i<answerChoices.size(); i++) {
             keyboard.addRow(new InlineKeyboardButton(answerChoices.get(i)).callbackData(String.valueOf(i)));
         }
-
-        SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
-
-        Integer messageId = null;
-        if (response != null && response.message() != null)
-            messageId = response.message().messageId();
-        return messageId;
-    }
-
-    public Integer offerNewTry(Long chatId) {
-        SendMessage message = new SendMessage(chatId, bundle.getString("offer_new_try"));
-        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup()
-                .addRow(new InlineKeyboardButton("OK").callbackData("OK"));
 
         SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
 
@@ -95,6 +78,23 @@ public class Bot {
             sendMessage(chatId, MessageFormat.format(
                     bundle.getString("correct_answer_to_question_was"), exerciseIdx, corrections.get(exerciseIdx)));
         }
+    }
+
+    public Integer offerNewTryAndGetMessageId(Long chatId) {
+        SendMessage message = new SendMessage(chatId, bundle.getString("offer_new_try"));
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup()
+                .addRow(new InlineKeyboardButton("OK").callbackData("OK"));
+
+        SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
+
+        Integer messageId = null;
+        if (response != null && response.message() != null)
+            messageId = response.message().messageId();
+        return messageId;
+    }
+
+    public void anounceNewTry(@NotNull Long chatId) {
+        sendMessage(chatId, bundle.getString("quiz_new_try_message"));
     }
 
     public void notifySessionHasExpired(@NotNull Long chatId) {
