@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class Session {
     public enum State {
         NEW_SESSION,
+        DEFINING_QUIZ_LENGTH,
         SOLVING_EXERCISES,
         NEW_TRY
     }
