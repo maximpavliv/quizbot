@@ -26,70 +26,88 @@ public class UpdatesService {
         if (chatId == null)
             return;
 
-        CallbackQuery callbackQuery = update.callbackQuery();
-
         if (!sessionService.sessionExists(chatId))
             sessionService.createSession(chatId);
 
         Session.State state = sessionService.getSessionState(chatId);
         switch (state) {
             case NEW_SESSION:
-                if (callbackQuery == null) {
-                    bot.greetUser(chatId);
-                    askQuizLength(chatId);
-                    sessionService.setSessionState(chatId, Session.State.DEFINING_QUIZ_LENGTH);
-                }
+                handleUpdateInNewSessionState(chatId, update);
                 break;
             case DEFINING_QUIZ_LENGTH:
-                Integer quizLength = null;
-                if (callbackQuery == null) {
-                    try {
-                        quizLength = Integer.parseInt(update.message().text());
-                    } catch (NumberFormatException ignored) {} // quizLength stays null
-                    if (quizLength == null || quizLength < 1 || quizLength > QuizService.MAX_QUIZ_LENGTH) {
-                        bot.remindQuizLengthLimits(chatId, 1, QuizService.MAX_QUIZ_LENGTH);
-                        askQuizLength(chatId);
-                        break;
-                    }
-                } else {
-                    if (answeringLastSentMessage(chatId, callbackQuery)) {
-                        quizLength = Integer.parseInt(callbackQuery.data());
-                    } else {
-                        break;
-                    }
-                }
-                bot.confirmQuizLength(chatId, quizLength);
-                sessionService.loadNewQuiz(chatId, quizLength);
-                askQuestion(chatId);
-                sessionService.setSessionState(chatId, Session.State.SOLVING_EXERCISES);
+                handleUpdateInDefiningQuizLengthState(chatId, update);
                 break;
             case SOLVING_EXERCISES:
-                if (callbackQuery != null) {
-                    if (answeringLastSentMessage(chatId, callbackQuery)) {
-                        processAnswer(chatId, Integer.parseInt(callbackQuery.data()));
-                    } else {
-                        break;
-                    }
-                } else {
-                    bot.warnMessageNotUnderstood(chatId);
-                }
-                if (!sessionService.quizIsFinished(chatId)) {
-                    askQuestion(chatId);
-                } else {
-                    bot.publishResults(chatId, sessionService.getResults(chatId));
-                    offerNewTry(chatId);
-                    sessionService.setSessionState(chatId, Session.State.NEW_TRY);
-                }
+                handleUpdateInSolvingExercisesState(chatId, update);
                 break;
             case NEW_TRY:
-                if (callbackQuery != null)
-                    if (!answeringLastSentMessage(chatId, callbackQuery))
-                        break;
-                bot.anounceNewTry(chatId);
-                askQuizLength(chatId);
-                sessionService.setSessionState(chatId, Session.State.DEFINING_QUIZ_LENGTH);
+                handleUpdateInNewTryState(chatId, update);
                 break;
         }
+    }
+
+    private void handleUpdateInNewSessionState(Long chatId, Update update) {
+        CallbackQuery callbackQuery = update.callbackQuery();
+        if (callbackQuery == null) {
+            bot.greetUser(chatId);
+            askQuizLength(chatId);
+            sessionService.setSessionState(chatId, Session.State.DEFINING_QUIZ_LENGTH);
+        }
+    }
+
+    private void handleUpdateInDefiningQuizLengthState(Long chatId, Update update) {
+        CallbackQuery callbackQuery = update.callbackQuery();
+        Integer quizLength = null;
+        if (callbackQuery == null) {
+            try {
+                quizLength = Integer.parseInt(update.message().text());
+            } catch (NumberFormatException ignored) {} // quizLength stays null
+            if (quizLength == null || quizLength < 1 || quizLength > QuizService.MAX_QUIZ_LENGTH) {
+                bot.remindQuizLengthLimits(chatId, 1, QuizService.MAX_QUIZ_LENGTH);
+                askQuizLength(chatId);
+                return;
+            }
+        } else {
+            if (answeringLastSentMessage(chatId, callbackQuery)) {
+                quizLength = Integer.parseInt(callbackQuery.data());
+            } else {
+                return;
+            }
+        }
+        bot.confirmQuizLength(chatId, quizLength);
+        sessionService.loadNewQuiz(chatId, quizLength);
+        askQuestion(chatId);
+        sessionService.setSessionState(chatId, Session.State.SOLVING_EXERCISES);
+    }
+
+    private void handleUpdateInSolvingExercisesState(Long chatId, Update update) {
+        CallbackQuery callbackQuery = update.callbackQuery();
+        if (callbackQuery != null) {
+            if (answeringLastSentMessage(chatId, callbackQuery)) {
+                processAnswer(chatId, Integer.parseInt(callbackQuery.data()));
+            } else {
+                return;
+            }
+        } else {
+            bot.warnMessageNotUnderstood(chatId);
+        }
+        if (!sessionService.quizIsFinished(chatId)) {
+            askQuestion(chatId);
+        } else {
+            bot.publishResults(chatId, sessionService.getResults(chatId));
+            offerNewTry(chatId);
+            sessionService.setSessionState(chatId, Session.State.NEW_TRY);
+        }
+    }
+
+    private void handleUpdateInNewTryState(Long chatId, Update update) {
+        CallbackQuery callbackQuery = update.callbackQuery();
+        if (callbackQuery != null)
+            if (!answeringLastSentMessage(chatId, callbackQuery))
+                return;
+        bot.anounceNewTry(chatId);
+        askQuizLength(chatId);
+        sessionService.setSessionState(chatId, Session.State.DEFINING_QUIZ_LENGTH);
     }
 
     private Long getChatId(Update update) {
