@@ -19,7 +19,7 @@ import java.util.SequencedMap;
 
 @Service
 public class QuizService {
-    private final static int QUIZ_LENGTH = 5;
+    public final static int MAX_QUIZ_LENGTH = 50;
 
     private final QuizRepository quizRepository;
 
@@ -38,10 +38,10 @@ public class QuizService {
     }
 
     @Transactional
-    public Quiz createQuiz(Session session) {
+    public Quiz createQuiz(Session session, int quizLength) {
         List<Long> allQuestionsIds = questionRepository.findAllIds();
 
-        if (QUIZ_LENGTH < 1 || QUIZ_LENGTH > allQuestionsIds.size()){
+        if (quizLength < 1 || quizLength > allQuestionsIds.size()){
             throw new RuntimeException("Invalid quiz length");
         }
 
@@ -51,7 +51,7 @@ public class QuizService {
         newQuiz.setSession(session);
 
         Collections.shuffle(allQuestionsIds);
-        List<Question> questions = allQuestionsIds.subList(0, QUIZ_LENGTH).stream()
+        List<Question> questions = allQuestionsIds.subList(0, quizLength).stream()
                 .map(questionRepository::getReferenceById).toList();
 
         List<QuizExercise> newQuizExercises = questions.stream()

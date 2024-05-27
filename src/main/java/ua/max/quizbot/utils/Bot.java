@@ -40,6 +40,32 @@ public class Bot {
         sendMessage(chatId, bundle.getString("quiz_starting_message"));
     }
 
+    public Integer askQuizLengthAndGetMessageId(Long chatId) {
+        SendMessage message = new SendMessage(chatId, bundle.getString("ask_quiz_length"));
+        InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup()
+                .addRow(new InlineKeyboardButton("3").callbackData("3"))
+                .addRow(new InlineKeyboardButton("5").callbackData("5"))
+                .addRow(new InlineKeyboardButton("10").callbackData("10"));
+
+        SendResponse response = telegramBot.execute(message.replyMarkup(keyboard));
+
+        Integer messageId = null;
+        if (response != null && response.message() != null)
+            messageId = response.message().messageId();
+        return messageId;
+    }
+
+    public void remindQuizLengthLimits(Long chatId, int minQuizLength, int maxQuizLength) {
+        String message = MessageFormat.format(bundle.getString("remind_quiz_length_limits"),
+                minQuizLength, maxQuizLength);
+        sendMessage(chatId, message);
+    }
+
+    public void confirmQuizLength(Long chatId, int quizLength) {
+        String message = MessageFormat.format(bundle.getString("confirm_quiz_length"), quizLength);
+        sendMessage(chatId, message);
+    }
+
     public Integer askQuestionAndGetMessageId(@NotNull Long chatId, Exercise exercise) {
         String questionText = MessageFormat.format(bundle.getString("ask_question_format"),
                 exercise.questionIndex().toString(), exercise.question());

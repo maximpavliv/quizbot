@@ -59,7 +59,6 @@ public class SessionService {
         Session newSession = new Session();
         sessionRepository.save(newSession);
 
-        newSession.setQuiz(quizService.createQuiz(newSession));
         newSession.setLastSentMessageId(null);
         newSession.setChatId(chatId);
         newSession.setLastActivityTime(LocalDateTime.now());
@@ -117,15 +116,17 @@ public class SessionService {
     }
 
     @Transactional
-    public void loadNewQuiz(Long chatId) {
+    public void loadNewQuiz(Long chatId, int quizLength) {
         Session session = sessionRepository.findByChatId(chatId);
-        Long oldQuizId = session.getQuiz().getQuizId();
-        session.setQuiz(null);
-        quizService.deleteQuiz(oldQuizId);
+        Quiz oldQuiz = session.getQuiz();
+        if (oldQuiz != null) {
+            Long oldQuizId = session.getQuiz().getQuizId();
+            session.setQuiz(null);
+            quizService.deleteQuiz(oldQuizId);
+            sessionRepository.flush();
+        }
 
-        sessionRepository.flush();
-
-        Quiz newQuiz = quizService.createQuiz(session);
+        Quiz newQuiz = quizService.createQuiz(session, quizLength);
         session.setQuiz(newQuiz);
         updateLastActivityTime(chatId);
     }
