@@ -47,7 +47,7 @@ java,"public class Test {
         System.out.println(str1.concat(str2));
     }
 }",41
-java,"String str1 = ""QuizBot"".replace('z','s');",42
+java,"String str1 = ""QuizzzBot"".replace('z','s');",42
 java,"String a = new String(""QuizBot"");
 String b = new String(""QuizBot"");
 Strinc c = ""QuizBot"";
@@ -60,9 +60,9 @@ java,"if (1 + 1 + 1 + 1 + 1 == 5) {
     System.out.print(""FALSE"");
 }",45
 java,"public class Solution {
-    public static void main(String… args) {
+    public static void main(String... args) {
         int x = 5;
-        x * = (3 + 7);
+        x *= (3 + 7);
         System.out.println(x);
     }
 }",46
@@ -82,13 +82,13 @@ do {
   System.out.println(""QuizBot"");
   count++;
 } while (count < 10);",50
-java,"class Increment {
+java,"public class Increment {
     public static void main(String args[]) {
         int g = 3;
         System.out.print(++g * 8);
     }
 }",56
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         double a, b,c;
         a = 3.0/0;
@@ -100,7 +100,7 @@ java,"class Output {
         System.out.println(c);
     }
 }",58
-java,"class VariableScope {
+java,"public class VariableScope {
     public static void main(String args[]) {
         int x;
         x = 5;
@@ -111,7 +111,7 @@ java,"class VariableScope {
         System.out.println(x + "" "" + y);
     }
 }",60
-java,"class LeftShiftOperator {
+java,"public class LeftShiftOperator {
     public static void main(String args[]) {
         byte x = 64;
         int i;
@@ -126,9 +126,9 @@ java,"class Box {
     int height;
     int length;
 }
-class Main {
+public class Main {
     public static void main(String args[]) {
-        box obj = new box();
+        Box obj = new Box();
         obj.width = 10;
         obj.height = 2;
         obj.length = 10;
@@ -136,20 +136,20 @@ class Main {
         System.out.print(y);
     }
 }",63
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         int arr[] = {1, 2, 3, 4, 5};
         for (int i = 0; i < arr.length - 2;++i)
             System.out.println(arr[i] + "" "");
     }
 }",65
-java,"class Abc {
+java,"public class Abc {
     public static void main(String args[]) {
         if(args.length > 0)
             System.out.println(args.length);
     }
 }",66
-java,"class StringDemo {
+java,"public class StringDemo {
     public static void main(String args[]) {
         char chars[] = {'a', 'b', 'c'};
         String s = new String(chars);
@@ -165,13 +165,13 @@ java,"class Recursion {
         return result;
     }
 }
-class Output {
+public class Output {
     public static void main(String args[]) {
-        recursion obj = new recursion();
+        Recursion obj = new Recursion();
         System.out.print(obj.func(5));
     }
 }",71
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         String c = ""Hello i love java"";
         boolean var;
@@ -179,21 +179,21 @@ java,"class Output {
         System.out.println(var);
     }
 }",72
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         StringBuffer s1 = new StringBuffer(""Quiz"");
         StringBuffer s2 = s1.reverse();
         System.out.println(s2);
     }
 }",74
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         Integer i = new Integer(257);
         byte x = i.byteValue();
         System.out.print(x);
     }
 }",75
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         double x = 2.0;
         double y = 3.0;
@@ -201,7 +201,7 @@ java,"class Output {
         System.out.print(z);
     }
 }",76
-java,"class Output {
+java,"public class Output {
     public static void main(String args[]) {
         double x = 3.14;
         int y = (int) Math.ceil(x);
@@ -209,7 +209,7 @@ java,"class Output {
     }
 }",78
 java,"import java.net.*;
-class Networking {
+public class Networking {
     public static void main(String[] args) throws Exception {
         URL obj = new URL(""https://www.sanfoundry.com/javamcq"");
         URLConnection obj1 = obj.openConnection();
@@ -218,16 +218,16 @@ class Networking {
     }
 }",79
 java,"import java.net.*;
-class Networking {
+public class Networking {
     public static void main(String[] args) throws MalformedURLException {
         URL obj = new URL(""https://www.sanfoundry.com/javamcq"");
         System.out.print(obj.toExternalForm());
     }
 }",81
 java,"import java.util.*;
-class Arraylists {
+public class ArrayLists {
     public static void main(String args[]) {
-        ArrayLists obj = new ArrayLists();
+        ArrayList obj = new ArrayList();
         obj.add(""A"");
         obj.add(""B"");
         obj.add(""C"");
@@ -236,7 +236,7 @@ class Arraylists {
     }
 }",82
 java,"import java.util.*;
-class CollectionIterators {
+public class CollectionIterators {
     public static void main(String args[]) {
         LinkedList list = new LinkedList();
         list.add(new Integer(2));
@@ -251,7 +251,8 @@ class CollectionIterators {
     }
 }",84
 java,"class NewThread extends Thread {
-    Thread t;
+    Thread t1;
+    Thread t2;
     NewThread() {
         t1 = new Thread(this,""Thread_1"");
         t2 = new Thread(this,""Thread_2"");
@@ -265,7 +266,7 @@ java,"class NewThread extends Thread {
     }
 }
 
-class MultithreadedPrograming {
+public class MultithreadedPrograming {
     public static void main(String args[]) {
         new NewThread();
     }
@@ -279,7 +280,7 @@ class B extends A {
     System.out.println(j + "" "" + i);
 }
 
-class Inheritance {
+public class Inheritance {
     public static void main(String args[]) {
         B obj = new B();
         obj.display();
@@ -297,16 +298,16 @@ java,"class Overload {
         y = c + d;
     }
 
-    overload() {
+    Overload() {
         this.x = 0;
         this.y = 0;
     }
 }
 
-class OverloadMethods
+public class OverloadMethods
 {
     public static void main(String args[]) {
-        overload obj = new overload();
+        Overload obj = new Overload();
         int a = 2;
         double b = 3.2;
         obj.add(a, a);
