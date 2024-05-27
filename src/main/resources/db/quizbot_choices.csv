@@ -6,10 +6,10 @@
 2,32 and 32
 2,64 and 64
 2,64 and 32
-3,Byte to int
-3,Int to long
-3,Long to int
-3,Short to int
+3,int to byte
+3,int to long
+3,long to int
+3,short to byte
 4,char[] ch = new char(5);
 4,char[] ch = new char[5];
 4,char[] ch = new char();
@@ -18,7 +18,7 @@
 5,A copy of the array
 5,Length of the array
 5,Copy of first element
-6,int[] A = {};
+6,"int[] A = [1, 2, 3]";
 6,"int[] A = {1, 2, 3};"
 6,"int[] A = (1, 2, 3);"
 6,"int[][] A = {1, 2, 3};"
@@ -98,9 +98,9 @@
 25,NumberFormatException
 25,ArithmeticException
 25,None
-26,java.lang.package
-26,java.util.package
-26,java.io.package
+26,java.lang package
+26,java.util package
+26,java.io package
 26,None
 27,Comparator
 27,EventListener
@@ -125,7 +125,7 @@
 32,Compile error
 32,Throws exception
 32,I
-32,24 I
+32,24I
 33,50
 33,10
 33,Compile error
@@ -241,7 +241,7 @@
 61,Multiple polymorphism
 61,Compile time polymorphism
 61,Multilevel polymorphism
-61,Execution time polymorphism
+61,Static runtime polymorphism
 62,0 256
 62,0 64
 62,256 0
