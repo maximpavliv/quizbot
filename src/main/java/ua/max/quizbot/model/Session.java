@@ -1,10 +1,14 @@
 package ua.max.quizbot.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "UserSession")
 public class Session {
     public enum State {
@@ -29,46 +33,4 @@ public class Session {
 
     @Enumerated(EnumType.STRING)
     private State state;
-
-    public Session() {}
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(Long chatId) {
-        this.chatId = chatId;
-    }
-
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
-    public Integer getLastSentMessageId() {
-        return lastSentMessageId;
-    }
-
-    public void setLastSentMessageId(Integer lastSentMessageId) {
-        this.lastSentMessageId = lastSentMessageId;
-    }
-
-    public LocalDateTime getLastActivityTime() {
-        return lastActivityTime;
-    }
-
-    public void setLastActivityTime(LocalDateTime lastActivityTime) {
-        this.lastActivityTime = lastActivityTime;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
 }
