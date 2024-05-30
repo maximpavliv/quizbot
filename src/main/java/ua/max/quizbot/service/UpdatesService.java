@@ -158,4 +158,8 @@ public class UpdatesService {
         Integer sentMessageId = bot.offerNewTryAndGetMessageId(chatId);
         sessionService.setLastSentMessageId(chatId, sentMessageId);
     }
+
+    // todo link to  linkedin?
+
+    // https://telegram.me/kwizzzzbot
 }

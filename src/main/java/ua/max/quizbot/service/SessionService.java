@@ -88,7 +88,7 @@ public class SessionService {
     public void setLastSentMessageId(Long chatId, Integer lastSentMessageId) {
         Session session = sessionRepository.findByChatId(chatId);
         session.setLastSentMessageId(lastSentMessageId);
-    }
+    } // beware here, session happened to be null!
 
     @Transactional
     public Exercise getCurrentExercise(Long chatId) {
