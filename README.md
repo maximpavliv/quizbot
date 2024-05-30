@@ -16,4 +16,5 @@ This project demonstrates basic Back-End and Deployment features:
 - No pushes to the remote main branch are allowed, new features must be merged via pull requests. The pull requests are tested, merging is impossible if tests fail.
 - Separate development and production environments are used (separate bot tokens and databases). Additionally, a database is set up in the CI process in order to keep the development and production databases isolated.
 - Questions can contain code snippets.
+- The user can choose the number of questions in the quiz (by choosing a suggested number or entering a custom one)
 - ...
