@@ -1,4 +1,4 @@
-package ua.max.quizbot;
+package ua.max.quizbot.controller;
 
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ua.max.quizbot.service.UpdatesService;
 
 import static com.pengrad.telegrambot.utility.BotUtils.parseUpdate;
 

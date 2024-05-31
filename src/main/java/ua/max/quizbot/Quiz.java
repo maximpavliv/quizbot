@@ -1,5 +1,7 @@
 package ua.max.quizbot;
 
+import ua.max.quizbot.model.Choice;
+import ua.max.quizbot.model.Question;
 import ua.max.quizbot.record.Exercise;
 import ua.max.quizbot.record.QuizResults;
 
@@ -16,52 +18,29 @@ public class Quiz {
 
     private int currentExerciseIdx;
 
-    public Quiz() {
+    public Quiz(List<Question> questions) {
 
         started = false;
         currentExerciseIdx = 0;
         userAnswers = new ArrayList<>();
 
         List<ProblemWithSolution> problemsWithSolutions = new ArrayList<>();
-        problemsWithSolutions.add(new ProblemWithSolution(
-                "Which of the following option leads to the portability and security of Java?",
-                "Bytecode is executed by JVM",
-                new String[]{"The applet makes the Java code secure and portable",
-                        "Use of exception handling",
-                        "Dynamic binding between objects"}
-        ));
-        problemsWithSolutions.add(new ProblemWithSolution(
-                "Which of the following is not a Java features?",
-                "Use of pointers",
-                new String[]{"Dynamic",
-                        "Architecture Neutral",
-                        "Object-oriented"}
-        ));
-        problemsWithSolutions.add(new ProblemWithSolution(
-                "The \\u0021 article referred to as a",
-                "Unicode escape sequence",
-                new String[]{"Octal escape",
-                        "Hexadecimal",
-                        "Line feed"}
-        ));
-        problemsWithSolutions.add(new ProblemWithSolution(
-                "_____ is used to find and fix bugs in the Java programs.",
-                "JDB",
-                new String[]{"JVM",
-                        "JRE",
-                        "JDK"}
-        ));
-        problemsWithSolutions.add(new ProblemWithSolution(
-                "What is the return type of the hashCode() method in the Object class?",
-                "int",
-                new String[]{"Object",
-                        "long",
-                        "void"}
-        ));
+        for (Question question : questions) {
+            problemsWithSolutions.add(
+                    new ProblemWithSolution(question.getQuestionText(),
+                            question.getAnswer().getChoice().getChoiceText(),
+                            question.getChoiceList().stream()
+                                    .filter(choice -> (choice != question.getAnswer().getChoice()))
+                                    .map(Choice::getChoiceText)
+                                    .toList().toArray(String[]::new)
+                    )
+            );
+        }
 
         exercisesWithSolutions = problemsWithSolutions.stream()
                 .map(ShuffledExerciseWithSolution::new).collect(Collectors.toList());
     }
+
     public boolean isStarted() {
         return started;
     }

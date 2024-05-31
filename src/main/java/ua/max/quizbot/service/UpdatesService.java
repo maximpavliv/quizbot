@@ -1,9 +1,12 @@
-package ua.max.quizbot;
+package ua.max.quizbot.service;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.max.quizbot.Bot;
+import ua.max.quizbot.Quiz;
+import ua.max.quizbot.SessionManager;
 import ua.max.quizbot.record.Exercise;
 
 @Service
