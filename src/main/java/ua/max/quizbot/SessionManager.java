@@ -3,6 +3,7 @@ package ua.max.quizbot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import ua.max.quizbot.model.Quiz;
 import ua.max.quizbot.record.Exercise;
 import ua.max.quizbot.record.QuizResults;
 import ua.max.quizbot.service.QuizService;
@@ -71,13 +72,13 @@ public class SessionManager {
 
     public boolean quizIsStarted(Long chatId) {
         Session session = sessions.get(chatId);
-        Quiz quiz = session.getQuiz();
+        Quiz quiz = quizService.findQuizById(session.getQuiz().getQuizId());
         return quiz.getStarted();
     }
 
     public void startQuiz(Long chatId) {
         Session session = sessions.get(chatId);
-        Quiz quiz = session.getQuiz();
+        Quiz quiz = quizService.findQuizById(session.getQuiz().getQuizId());
         quiz.setStarted(true);
         updateLastActivityTime(chatId);
     }
@@ -94,23 +95,23 @@ public class SessionManager {
 
     public Exercise getCurrentExercise(Long chatId) {
         Session session = sessions.get(chatId);
-       return quizService.getCurrentExercise(session.getQuiz());
+       return quizService.getCurrentExercise(session.getQuiz().getQuizId());
     }
 
     public void saveAnswerAndSwitchToNextExercise(Long chatId, int userAnswer) {
         Session session = sessions.get(chatId);
-        quizService.saveAnswerAndSwitchToNextExercise(session.getQuiz(), userAnswer);
+        quizService.saveAnswerAndSwitchToNextExercise(session.getQuiz().getQuizId(), userAnswer);
         updateLastActivityTime(chatId);
     }
 
     public boolean quizIsFinished(Long chatId) {
         Session session = sessions.get(chatId);
-        return quizService.quizIsFinished(session.getQuiz());
+        return quizService.quizIsFinished(session.getQuiz().getQuizId());
     }
 
     public QuizResults getResults(Long chatId) {
         Session session = sessions.get(chatId);
-        return quizService.getResults(session.getQuiz());
+        return quizService.getResults(session.getQuiz().getQuizId());
     }
 
     public void loadNewQuiz(Long chatId) {

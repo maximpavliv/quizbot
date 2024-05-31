@@ -2,69 +2,132 @@ package ua.max.quizbot.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.max.quizbot.Quiz;
+import org.springframework.transaction.annotation.Transactional;
+import ua.max.quizbot.model.Question;
+import ua.max.quizbot.model.Quiz;
+import ua.max.quizbot.model.QuizExercise;
 import ua.max.quizbot.record.Exercise;
 import ua.max.quizbot.record.QuizResults;
 import ua.max.quizbot.repository.QuestionRepository;
+import ua.max.quizbot.repository.QuizRepository;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.SequencedMap;
-import java.util.stream.IntStream;
 
 @Service
 public class QuizService {
+    private final static int QUIZ_LENGTH = 5;
+
+    private final QuizRepository quizRepository;
 
     private final QuestionRepository questionRepository;
 
+    private final QuizExerciseService quizExerciseService;
+
+
     @Autowired
-    public QuizService(QuestionRepository questionRepository) {
+    public QuizService(QuizRepository quizRepository,
+                       QuestionRepository questionRepository,
+                       QuizExerciseService quizExerciseService) {
+        this.quizRepository = quizRepository;
         this.questionRepository = questionRepository;
+        this.quizExerciseService = quizExerciseService;
     }
 
+    @Transactional
     public Quiz createQuiz() {
-        return new Quiz(questionRepository.findAll());
+        List<Long> allQuestionsIds = questionRepository.findAllIds();
+
+        if (QUIZ_LENGTH < 1 || QUIZ_LENGTH > allQuestionsIds.size()){
+            throw new RuntimeException("Invalid quiz length");
+        }
+
+        Quiz newQuiz = new Quiz();
+        quizRepository.save(newQuiz);
+
+        Collections.shuffle(allQuestionsIds);
+        List<Question> questions = allQuestionsIds.subList(0, QUIZ_LENGTH).stream()
+                .map(questionRepository::getReferenceById).toList();
+
+        List<QuizExercise> newQuizExercises = questions.stream()
+                .map(question -> quizExerciseService.createQuizExercise(newQuiz, question, questions.indexOf(question)))
+                .toList();
+
+        newQuiz.setQuizExercises(newQuizExercises);
+        newQuiz.setStarted(false);
+        newQuiz.setCurrentExerciseIdx(0);
+
+        return newQuiz;
     }
 
-    public Exercise getCurrentExercise(Quiz quiz) {
-        List<Quiz.ShuffledExerciseWithSolution> exercisesWithSolutions = quiz.getExercisesWithSolutions();
-        int currentExerciseIdx = quiz.getCurrentExerciseIdx();
-        return exercisesWithSolutions.get(currentExerciseIdx).getExercise();
+    @Transactional
+    public void deleteQuiz(Long quizId) {
+        quizRepository.deleteById(quizId);
     }
 
-    public void saveAnswerAndSwitchToNextExercise(Quiz quiz, int userAnswer) {
-        List<Integer> userAnswers = quiz.getUserAnswers();
-        userAnswers.add(userAnswer);
+    @Transactional
+    public Exercise getCurrentExercise(Long quizId) {
+        QuizExercise currentQuizExercise = getCurrentQuizExercise(quizId);
+        return quizExerciseService.getExercise(currentQuizExercise.getQuizExerciseId());
+    }
+
+    @Transactional
+    public void saveAnswerAndSwitchToNextExercise(Long quizId, int userCallbackData) {
+        QuizExercise currentQuizExercise = getCurrentQuizExercise(quizId);
+        quizExerciseService.saveUserAnswer(currentQuizExercise.getQuizExerciseId(), userCallbackData);
+
+        Quiz quiz = quizRepository.getReferenceById(quizId);
         quiz.setCurrentExerciseIdx(quiz.getCurrentExerciseIdx() + 1);
     }
 
-    public boolean quizIsFinished(Quiz quiz) {
-        return (quiz.getCurrentExerciseIdx() >= quiz.getExercisesWithSolutions().size());
+    @Transactional
+    public boolean quizIsFinished(Long quizId) {
+        Quiz quiz = quizRepository.getReferenceById(quizId);
+        return (quiz.getCurrentExerciseIdx() >= quiz.getQuizExercises().size());
     }
 
-    public QuizResults getResults(Quiz quiz) {
-        if (!quizIsFinished(quiz))
+    @Transactional
+    public QuizResults getResults(Long quizId) {
+
+        if (!quizIsFinished(quizId))
             return null;
 
-        List<Quiz.ShuffledExerciseWithSolution> exercisesWithSolutions = quiz.getExercisesWithSolutions();
-        List<Integer> userAnswers = quiz.getUserAnswers();
+        Quiz quiz = quizRepository.getReferenceById(quizId);
+        List<QuizExercise> quizExercises = quiz.getQuizExercises().stream()
+                .map(QuizExercise::getQuizExerciseId)
+                .map(quizExerciseService::findQuizExerciseById)
+                .toList();
 
-        int numberQuestions = exercisesWithSolutions.size();
-        long correctAnswersCount = IntStream.range(0, numberQuestions)
-                .filter(i -> userAnswers.get(i).equals(exercisesWithSolutions.get(i).getSolution()))
+        int numberQuestions = quizExercises.size();
+        long correctAnswersCount = quizExercises.stream()
+                .filter(quizExercise -> quizExerciseService.getUserChoice(quizExercise.getQuizExerciseId())
+                        .equals(quizExerciseService.getCorrectChoice(quizExercise.getQuizExerciseId())))
                 .count();
         String score = correctAnswersCount + "/" + numberQuestions;
 
         SequencedMap<String, String> corrections = new LinkedHashMap<>();
-        for (int i=0; i<exercisesWithSolutions.size(); i++) {
-            Quiz.ShuffledExerciseWithSolution exerciseWithSolution = exercisesWithSolutions.get(i);
-            int userAnswer = userAnswers.get(i);
-            if (exerciseWithSolution.getSolution() != userAnswer) {
-                corrections.put(
-                        exerciseWithSolution.getExercise().question(),
-                        exerciseWithSolution.getExercise().answerChoices().get(exerciseWithSolution.getSolution()));
-            }
-        }
+        quizExercises.stream()
+                .filter(quizExercise -> !quizExerciseService.getUserChoice(quizExercise.getQuizExerciseId())
+                        .equals(quizExerciseService.getCorrectChoice(quizExercise.getQuizExerciseId())))
+                .forEach(quizExercise -> {
+                            corrections.put(quizExercise.getQuestion().getQuestionText(),
+                                    quizExercise.getQuestion().getAnswer().getChoice().getChoiceText());
+                        });
+
         return new QuizResults(score, corrections);
+
+    }
+
+    @Transactional
+    public Quiz findQuizById(Long quizId) {
+        return quizRepository.getReferenceById(quizId);
+    }
+
+    @Transactional
+    private QuizExercise getCurrentQuizExercise(Long quizId) {
+        Quiz quiz = quizRepository.getReferenceById(quizId);
+        return quiz.getQuizExercises().get(quiz.getCurrentExerciseIdx());
     }
 }
