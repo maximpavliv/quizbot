@@ -14,12 +14,12 @@ import static com.pengrad.telegrambot.utility.BotUtils.parseUpdate;
 
 @RestController
 @RequestMapping("/")
-public class UpdatesController {
+public class UpdateController {
 
     private final UpdatesService updatesService;
 
     @Autowired
-    public UpdatesController(UpdatesService updatesService) {
+    public UpdateController(UpdatesService updatesService) {
         this.updatesService = updatesService;
     }
 
